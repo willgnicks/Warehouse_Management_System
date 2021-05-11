@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <title>库存管理系统</title>
+    <link href="/static/images/company.icns" rel="icon">
+    <!-- Bootstrap -->
+    <link href="/static/css/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    {#    <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">#}
+    <link href="/static/css/nprogress/nprogress.css" rel="stylesheet">
+    <!-- Custom Theme Style -->
+    <link href="/static/css/mysite/custom.min.css" rel="stylesheet">
+</head>
+
+<body class="nav-md">
+{#<div class="mask" style="height: 100%; width: 100%; position: center; background: #1c7430;z-index: 10000">#}
+{#    <h1>hello world</h1>#}
+{#</div>#}
+<div class="container body">
+    <div class="main_container">
+        <div class="col-md-3 left_col">
+            <div class="left_col scroll-view">
+                <div class="navbar nav_title" style="border: 0;">
+                    <a href="{% url 'home_and_login:go_home' %}" class="site_title"><i class="fa fa-home"></i><span>&nbsp;首页</span></a>
+                </div>
+                <div class="clearfix"></div>
+                <br/>
+
+                <!-- 左侧菜单栏 -->
+                <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                    <div class="menu_section">
+                        <ul class="nav side-menu">
+                            <li>
+                                <a href="{% url 'project_related:all_project_details' %}">
+                                    <i class="fa fa-cubes"></i>
+                                    项目管理
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'product_related:all_product_details' %}">
+                                    <i class="fa fa-product-hunt"></i>
+                                    产品管理
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'manufacturer_related:all_manufacturer_details' %}">
+                                    <i class="fa fa-group"></i>
+                                    供应商管理
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'purchase_related:all_purchase_details' %}">
+                                    <i class="fa fa-yen"></i>
+                                    采购管理
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'inbound_related:all_inbounds_details' %}">
+                                    <i class="fa fa-inbox"></i>
+                                    入库管理
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'receptions_related:all_reception_details' %}">
+                                    <i class="fa fa-industry"></i>
+                                    领用管理
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'lending_related:all_lending_details' %}">
+                                    <i class="fa fa-archive"></i>
+                                    借测管理
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'outbound_related:all_outbound_details' %}">
+                                    <i class="fa fa-truck"></i>
+                                    出库管理
+                                </a>
+                            </li>
+                            {% if request.session.type != '普通用户' %}
+
+                                <li><a href="{% url 'user_related:all_users_details' %}"><i class="fa fa-user"></i> 用户管理
+                                </a>
+                                </li>
+                            {% endif %}
+                            {#                            <li><a><i class="fa fa-book"></i> 日志管理 </a></li>#}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- 顶部导航条 -->
+        <div class="top_nav">
+            <div class="nav_menu">
+                <div class="nav toggle">
+                    <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                </div>
+                <nav class="nav navbar-nav">
+                    <ul class=" navbar-right">
+                        <li class="nav-item dropdown open" style="padding-left: 15px;">
+                            <a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true"
+                               id="navbarDropdown" data-toggle="dropdown" aria-expanded="false">
+                                <img src="/static/images/seclover.png" alt="">{{ request.session.username }}
+                            </a>
+                            <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="javascript:;"> 我的账户 </a>
+                                <a class="dropdown-item" href="javascript:;">
+                                    <span class="badge bg-red pull-right">50%</span>
+                                    <span>系统设置</span>
+                                </a>
+                                <a class="dropdown-item" href="javascript:;">帮助</a>
+                                <a class="dropdown-item" href="/logout/"><i
+                                        class="fa fa-sign-out pull-right"></i> 注销
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        <!-- 右侧内容 -->
+        <div class="right_col" role="main">
+            <div class="">
+                <div class="page-title">
+                    {% block page_title %}
+                    {% endblock %}
+                </div>
+                <div class="clearfix"></div>
+
+                <div class="row">
+                    <div class="col-md-12 col-sm-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                {% block content_title %}
+                                {% endblock %}
+                                <ul class="nav navbar-right panel_toolbox">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                    </li>&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <li><a class="close-link"><i class="fa fa-close"></i></a>
+                                    </li>
+                                </ul>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <div class="row">
+                                    <div class="col-sm-12">
+{#                                        <div class="card-box table-responsive">#}
+{#                                            <div class="dataTables_wrapper container-fluid">#}
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        {% block content %}
+                                                        {% endblock %}
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    {% block footer %}
+                                                    {% endblock %}
+                                                </div>
+{#                                            </div>#}
+{#                                        </div>#}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- jQuery -->
+<script src="/static/js/jquery.min.js"></script>
+<!-- Bootstrap -->
+<script src="/static/js/bootstrap.bundle.min.js"></script>
+<!-- FastClick -->
+<!--    <script src="../vendors/fastclick/lib/fastclick.js"></script>-->
+<!-- NProgress -->
+<script src="/static/js/nprogress.js"></script>
+<!-- ECharts -->
+<script src="/static/js/echarts.min.js"></script>
+<!--    <script src="../vendors/echarts/map/js/world.js"></script>-->
+
+<!-- Custom Theme Scripts -->
+<script src="/static/js/custom.min.js"></script>
+{#<script src="/static/proJS/project.js"></script>#}
+
+{% block javascript %}
+{% endblock %}
+</body>
+</html>

@@ -1,0 +1,115 @@
+{% extends 'layout/base.html' %}
+
+
+{% block page_title %}
+    <div class="title_left">
+        <h3>借测管理</h3>
+    </div>
+{% endblock %}
+{% block content_title %}
+    <h2>新增借测&nbsp;
+        <small>
+            <a class="fa fa-angle-double-right"></a>
+            &nbsp;&nbsp;
+        </small>
+
+    </h2>
+
+{% endblock %}
+{% block content %}
+    <div class="x_content">
+        <form action="{% url 'lending_related:add_lending' %}" method="post" novalidate>
+            {% csrf_token %}
+            {#            lendings#}
+            {#            borrow_man = models.CharField(max_length=20)#}
+            {#            borrow_date = models.DateField()#}
+            {#            project_name = models.CharField(max_length=50)#}
+            {#            duration = models.CharField(max_length=20)#}
+            {#            return_date = models.DateField()#}
+            {#            comments = models.CharField(max_length=100)#}
+            {#            type = models.CharField(max_length=10)#}
+            {#            borrow_product = models.ForeignKey(to=Inbound, on_delete=models.DO_NOTHING)#}
+            <div class="field item form-group">
+                <label class="col-form-label col-md-3 col-sm-3  label-align">借用人<span
+                        class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <input class="form-control" name="borrow_man" type="text" placeholder="张三"
+                           value="{{ lendings.borrow_man.value }}"
+                           required="required"/>
+                    <span style="color: red; font-weight: bold">{{ lendings.borrow_man.errors.0 }}</span>
+                </div>
+            </div>
+            <div class="field item form-group">
+                <label class="col-form-label col-md-3 col-sm-3  label-align">借用日期<span
+                        class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <input class="form-control" name="borrow_date" type="text" placeholder="2020-03"
+                           value="{{ lendings.borrow_date.value }}"
+                           required="required"/>
+                    <span style="color: red; font-weight: bold">{{ lendings.borrow_date.errors.0 }}</span>
+                </div>
+            </div>
+            <div class="field item form-group">
+                <label class="col-form-label col-md-3 col-sm-3  label-align">项目名称<span
+                        class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <input class="form-control" name="project_name" type="text" placeholder="中铁"
+                           value="{{ lendings.project_name.value }}"
+                           required="required"/>
+                    <span style="color: red; font-weight: bold">{{ lendings.project_name.errors.0 }}</span>
+                </div>
+            </div>
+            <div class="field item form-group">
+                <label class="col-form-label col-md-3 col-sm-3  label-align">项目名称<span
+                        class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <input class="form-control" name="duration" type="text" placeholder="3个月"
+                           value="{{ lendings.duration.value }}"
+                           required="required"/>
+                    <span style="color: red; font-weight: bold">{{ lendings.duration.errors.0 }}</span>
+                </div>
+            </div>
+            <div class="field item form-group">
+                <label class="col-form-label col-md-3 col-sm-3  label-align">备注<span
+                        class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <textarea class="form-control" name="comments" placeholder="备注其他信息"
+                              value="{{ lendings.comments.value }}"
+                              required></textarea>
+                    <span style="color: red; font-weight: bold">{{ lendings.comments.errors.0 }}</span>
+                </div>
+            </div>
+            <div class="field item form-group">
+                <label class="col-form-label col-md-3 col-sm-3  label-align">邮 箱<span
+                        class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <input class="form-control" name="mail" type="email" placeholder="example@email.com"
+                           value="{{ user.mail.value }}"/>
+                    <span style="color: red; font-weight: bold">{{ user.mail.errors.0 }}</span>
+                </div>
+            </div>
+            <div class="field item form-group">
+                <label class="col-form-label col-md-3 col-sm-3  label-align">手机号码<span
+                        class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <input class="form-control" name="phone" data-validate-linked='phone'
+                           value="{{ user.phone.value }}" required='required'/>
+                    <span style="color: red; font-weight: bold">{{ user.phone.errors.0 }}</span>
+                </div>
+            </div>
+
+            <div class="clearfix"></div>
+            <div class="col-md-6 offset-md-3"></div>
+
+            <div class="ln_solid">
+                <div class="form-group">
+                    <br/>
+                    <div class="col-md-6 offset-md-3">
+                        <button type='submit' class="btn btn-danger">提 交</button>
+                        <button type='reset' class="btn btn-warning">重 置</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}

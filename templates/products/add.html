@@ -1,0 +1,88 @@
+{% extends 'layout/base.html' %}
+
+{% block page_title %}
+    <div class="title_left">
+        <h3>产品管理</h3>
+    </div>
+{% endblock %}
+{% block content_title %}
+    <h2>新增产品&nbsp;
+        <small>
+            <a class="fa fa-angle-double-right"></a>
+            &nbsp;&nbsp;
+        </small>
+
+    </h2>
+
+{% endblock %}
+{% block content %}
+    <div class="x_content">
+        <form action="{% url 'product_related:add_product' %}" method="post" novalidate>
+            {% csrf_token %}
+            <div class="field item form-group">
+                <label class="col-form-label col-md-3 col-sm-3  label-align">产品名称<span
+                        class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <input class="form-control" name="product_name" type="text" placeholder="请键入产品名称"
+                           value="{{ products.product_name.value }}"
+                           required="required"/>
+                    <span style="color: red; font-weight: bold">{{ products.product_name.errors.0 }}</span>
+                </div>
+            </div>
+            <div class="field item form-group">
+                <label class="col-form-label col-md-3 col-sm-3  label-align">产品型号<span
+                        class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <input class="form-control" name="product_model" type="text" placeholder="请键入产品型号"
+                           value="{{ products.product_model.value }}"/>
+                    <span style="color: red; font-weight: bold">{{ products.product_model.errors.0 }}</span>
+                </div>
+            </div>
+            <div class="field item form-group">
+                <label class="col-form-label col-md-3 col-sm-3  label-align">产品类型<span
+                        class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <input class="form-control" name="product_type" type="text" placeholder="请键入产品类型"
+                           value="{{ products.product_type.value }}"/>
+                    <span style="color: red; font-weight: bold">{{ products.product_type.errors.0 }}</span>
+                </div>
+            </div>
+
+            <div class="field item form-group">
+                <label class="col-form-label col-md-3 col-sm-3  label-align">产品单价<span
+                        class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <input class="form-control" name="unit_price" type="text" placeholder="请键入产品单价"
+                           value="{{ products.unit_price.value }}"/>
+                    <span style="color: red; font-weight: bold">{{ products.unit_price.errors.0 }}</span>
+                </div>
+            </div>
+            <div class="field item form-group">
+                <label class="col-form-label col-md-3 col-sm-3  label-align">供应商<span
+                        class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <select class="form-control" name="manufacturer">
+                        <option>请选择</option>
+                        {% for manufacturer in manufacturers %}
+                            <option value="{{ manufacturer.id }}">{{ manufacturer.manufacturer_name }}</option>
+                        {% endfor %}
+                    </select>
+                    <span style="color: red; font-weight: bold">{{ products.manufacturer.errors.0 }}</span>
+                </div>
+            </div>
+
+            <div class="clearfix"></div>
+            <div class="col-md-6 offset-md-3"></div>
+
+            <div class="ln_solid">
+                <div class="form-group">
+                    <br/>
+                    <div class="col-md-6 offset-md-3">
+                        <button type='submit' class="btn btn-danger">提 交</button>
+                        <button type='reset' class="btn btn-warning">重 置</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}

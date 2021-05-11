@@ -1,0 +1,122 @@
+{% extends 'layout/base.html' %}
+
+{% block page_title %}
+    <div class="title_left">
+        <h3>入库管理</h3>
+    </div>
+{% endblock %}
+{% block content_title %}
+    <h2>新增入库&nbsp;
+        <small>
+            <a class="fa fa-angle-double-right"></a>
+            &nbsp;&nbsp;
+        </small>
+
+    </h2>
+
+{% endblock %}
+{% block content %}
+    <div class="x_content">
+        <form action="{% url 'inbound_related:add_inbound' %}" method="post" novalidate>
+            {% csrf_token %}
+            <div class="field item form-group">
+                <label class="col-form-label col-md-3 col-sm-3  label-align">入库来源<span
+                        class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <select class="form-control" name="purchase_belong">
+                        <option>请选择</option>
+                        {% for purchase in purchases %}
+                            <option value="{{ purchase.id }}">
+                                项目名称：{{ purchase.project.project_name }}&nbsp;&nbsp;&nbsp;&nbsp;采购单号： {{ purchase.form_number }}</option>
+                        {% endfor %}
+                    </select>
+                    <span style="color: red; font-weight: bold">{{ inbounds.purchase_belong.errors.0 }}</span>
+                </div>
+            </div>
+            <div class="field item form-group">
+                <label class="col-form-label col-md-3 col-sm-3  label-align">入库产品<span
+                        class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <select class="form-control" name="product_belong">
+                        <option>请选择</option>
+                        {% for purchase in purchases %}
+                            {% for product in purchase.product.all %}
+                                <option value="{{ product.id }}">产品名称：{{ product.product_name }}
+                                    &nbsp;&nbsp;&nbsp;&nbsp;采购数量：{{ purchase.quantity }}</option>
+                            {% endfor %}
+                        {% endfor %}
+                    </select>
+                    <span style="color: red; font-weight: bold">{{ inbounds.product_belong.errors.0 }}</span>
+                </div>
+            </div>
+
+            <div class="field item form-group">
+                <label class="col-form-label col-md-3 col-sm-3  label-align">物料编号<span
+                        class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <input class="form-control" name="material_code" placeholder="JP2020040"
+                           value="{{ inbounds.material_code.value }}"
+                           required="required"/>
+                    <span style="color: red; font-weight: bold">{{ inbounds.material_code.errors.0 }}</span>
+                </div>
+            </div>
+            <div class="field item form-group">
+                <label class="col-form-label col-md-3 col-sm-3  label-align">设备ID<span
+                        class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <input class="form-control" name="equipment_ID"
+                           value="{{ inbounds.equipment_ID.value }}" required/>
+                    <span style="color: red; font-weight: bold">{{ inbounds.equipment_ID.errors.0 }}</span>
+                </div>
+            </div>
+            <div class="field item form-group">
+                <label class="col-form-label col-md-3 col-sm-3  label-align">入库数量<span
+                        class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <input class="form-control" name="quantity" placeholder="10"
+                           value="{{ inbounds.quantity.value }}"/>
+                    <span style="color: red; font-weight: bold">{{ inbounds.quantity.errors.0 }}</span>
+                </div>
+            </div>
+            <div class="field item form-group">
+                <label class="col-form-label col-md-3 col-sm-3  label-align">入库时间<span
+                        class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <input class="form-control" name="in_house_date" value="{{ inbounds.in_house_date.value }}"
+                           required/>
+                    <span style="color: red; font-weight: bold">{{ inbounds.in_house_date.errors.0 }}</span>
+                </div>
+            </div>
+            <div class="field item form-group">
+                <label class="col-form-label col-md-3 col-sm-3  label-align">设备状态<span
+                        class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <input class="form-control" name="status" value="{{ inbounds.status.value }}" required/>
+                    <span style="color: red; font-weight: bold">{{ inbounds.status.errors.0 }}</span>
+                </div>
+            </div>
+            <div class="field item form-group">
+                <label class="col-form-label col-md-3 col-sm-3  label-align">备注<span
+                        class="required">&nbsp;</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <textarea class="form-control" name="comments"
+                              placeholder="备注其他信息">{{ inbounds.comments.value }}</textarea>
+                    <span style="color: #ff0000; font-weight: bold">{{ inbounds.comments.errors.0 }}</span>
+                </div>
+            </div>
+
+            <div class="clearfix"></div>
+            <div class="col-md-6 offset-md-3"></div>
+
+            <div class="ln_solid">
+                <div class="form-group">
+                    <br/>
+                    <div class="col-md-6 offset-md-3">
+                        <button type='submit' class="btn btn-danger">提 交</button>
+                        <button type='reset' class="btn btn-warning">重 置</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}

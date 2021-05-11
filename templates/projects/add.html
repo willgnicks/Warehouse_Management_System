@@ -1,0 +1,56 @@
+{% extends 'layout/base.html' %}
+
+{% block page_title %}
+    <div class="title_left">
+        <h3>项目管理</h3>
+    </div>
+{% endblock %}
+{% block content_title %}
+    <h2>新增项目&nbsp;
+        <small>
+            <a class="fa fa-angle-double-right"></a>
+            &nbsp;&nbsp;
+        </small>
+
+    </h2>
+
+{% endblock %}
+{% block content %}
+    <div class="x_content">
+        <form action="{% url 'project_related:add_project' %}" method="post" novalidate>
+            {% csrf_token %}
+            <div class="field item form-group">
+                <label class="col-form-label col-md-3 col-sm-3  label-align">项目名称<span
+                        class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <input class="form-control" name="project_name" type="text" placeholder="请键入项目名称"
+                           value="{{ projects.project_name.value }}"
+                           required="required"/>
+                    <span style="color: red; font-weight: bold">{{ projects.project_name.errors.0 }}</span>
+                </div>
+            </div>
+            <div class="field item form-group">
+                <label class="col-form-label col-md-3 col-sm-3  label-align">项目编号<span
+                        class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <input class="form-control" name="project_code" type="text" placeholder="请键入项目编号"
+                           value="{{ projects.project_code.value }}"/>
+                    <span style="color: red; font-weight: bold">{{ projects.project_code.errors.0 }}</span>
+                </div>
+            </div>
+
+            <div class="clearfix"></div>
+            <div class="col-md-6 offset-md-3"></div>
+
+            <div class="ln_solid">
+                <div class="form-group">
+                    <br/>
+                    <div class="col-md-6 offset-md-3">
+                        <button type='submit' class="btn btn-danger">提 交</button>
+                        <button type='reset' class="btn btn-warning">重 置</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}

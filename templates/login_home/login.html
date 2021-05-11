@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>欢迎登陆 </title>
+    <link href="/static/images/company.icns" rel="icon">
+    <!-- Bootstrap -->
+    <link href="/static/css/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="/static/css/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!-- NProgress -->
+    <link href="/static/css/nprogress/nprogress.css" rel="stylesheet">
+    <!-- Animate.css -->
+    <link href="/static/css/animate/animate.min.css" rel="stylesheet">
+    <!-- Custom Theme Style -->
+    <link href="/static/css/mysite/custom.min.css" rel="stylesheet">
+    <script src="/static/js/jquery.min.js"></script>
+</head>
+<body class="login">
+<div>
+    <div class="login_wrapper">
+        <div class="form login_form" style="position: relative;text-shadow: 0 1px 0 #fff;">
+            <form action="{% url 'home_and_login:go_login' %}" method="post" novalidate>
+                {% csrf_token %}
+                <h1 style="text-align: center">用户登录</h1>
+                <br/><br/>
+                <br/><br/>
+                <br/><br/>
+                <div>
+                    <input name="username" type="text" value="{{ login.username.value }}" class="form-control" placeholder="请输入用户名" required=""/>
+                </div>
+                <br/>
+                    <span style="color: red; font-weight: bold;">{{ login.username.errors.0 }}</span>
+                <br/>
+                <br/>
+                <div>
+                    <input name="password" type="password"  class="form-control" placeholder="请输入用户密码" required=""/>
+                </div>
+                <br/>
+                    <span style="color: red; font-weight: bold;">{{ login.password.errors.0 }}{{ msg }}</span>
+                <br/>
+                <br/>
+                <div class="clearfix"></div>
+                <div style="height: 38px; text-align: center">
+                    <input type="submit" value="登录" class="btn btn-lg btn-success">
+                </div>
+
+
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

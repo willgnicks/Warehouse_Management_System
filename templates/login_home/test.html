@@ -1,0 +1,281 @@
+<!DOCTYPE HTML >
+<html lang="en">
+<head>
+<meta charset="utf-8">
+
+<title>点餐管理系统</title>
+
+<!-- Css files -->
+<!-- Icons -->
+
+<!-- <link rel="stylesheet" type="text/css" href="confirm/css/normalize.css" /> -->
+<!-- <link rel="stylesheet" type="text/css" href="confirm/css/confirm.css" /> -->
+<!-- <link rel="stylesheet" type="text/css" href="confirm/css/demo.css" /> -->
+<!-- <link rel="stylesheet" type="text/css" href="confirm/css/MODALit.min.css" /> -->
+<!--
+	<link rel="stylesheet" type="text/css" href="styles.css">-->
+
+
+</head>
+<body>
+	<!-- 头开始 -->
+	<div id="header">
+		<div class="container-fluid">
+			<div class="navbar">
+
+				<!--                 左上角按钮和图片 -->
+				<div class="navbar-header">
+					<a class="navbar-brand" href="index.jsp"> <i
+						class="im-windows8 text-logo-element animated bounceIn"></i><span
+						class="text-logo">主</span><span class="text-slogan">页</span> </a>
+				</div>
+				<nav class="top-nav" role="navigation">
+
+					<ul class="nav navbar-nav pull-left">
+						<!--                         隐藏左边栏的按钮 -->
+						<li id="toggle-sidebar-li"><a href="#" id="toggle-sidebar"><i
+								class="en-arrow-left2"></i> </a></li>
+						<!--  全屏按钮 -->
+						<li><a href="#" class="full-screen"><i
+								class="fa-fullscreen"></i> </a></li>
+					</ul>
+					<span id="currentDate"
+						style="color: white;font-size:large;font-weight:bold;line-height: 51px; position:absolute; left:45%;top:0.5px;"></span>
+					<ul class="nav navbar-nav pull-right">
+						<!--                           图片和名字 -->
+						<li class="dropdown"><a href="#" data-toggle="dropdown">
+								<img class="user-avatar" src="assets/img/avatars/130.jpg"
+								alt="SuggeElson"><span id="OurUser" title="${sessionScope.account.a_id }" >${sessionScope.account.a_name}</span>&nbsp;<span
+								id="welcomeWord" style="color: white; "></span> </a></li>
+					</ul>
+				</nav>
+			</div>
+		</div>
+		<!-- Start .header-inner -->
+	</div>
+	<!--头结束 -->
+
+
+	<!-- 左边栏开始 -->
+	<div id="sidebar">
+		<!-- 左边栏内部开始 -->
+		<div class="sidebar-inner">
+			<!-- Start #sideNav -->
+			<ul id="sideNav" class="nav nav-pills nav-stacked">
+				<!--                 左边栏搜索选项 -->
+				<li class="top-search">
+					<form>
+						<input type="text" name="search" placeholder="Search ...">
+						<button type="submit">
+							<i class="ec-search s20"></i>
+						</button>
+					</form></li>
+				<!--                     主页按钮 -->
+				<li><a href="index.jsp">主页 <i class="im-screen"></i> </a></li>
+
+				<c:if test="${sessionScope.account.a_type eq 0}">
+				<li><a href="menuMain.jsp">菜单管理 <i class="st-chart"></i> </a></li>
+				<!--                     餐桌管理 -->
+				<li><a href="deskMain.jsp"> 餐桌管理 <i
+						class="im-paragraph-justify"></i> </a></li>
+				<!--                     人员管理 -->
+				<li><a href="userMain.jsp"> 用户管理 <i class="im-table2"></i>
+				</a></li>
+				<!--                     类型管理 -->
+				<li><a href="typeMain.jsp"> 类型管理 <i class="st-lab"></i> </a></li>
+				<li><a href="#"><i class="en-upload"></i> 统计查询</a>
+				    <ul class="nav sub">
+							<li><a href="orderMain.jsp"><i class="ec-archive"></i>订单查询</a></li>
+							<li><a href="incomeMain.jsp"><i class="br-eye"></i>收入统计</a></li>
+                    </ul>
+
+				</li>
+				</c:if>
+				<!-- 更多功能 -->
+					<li>
+						<a href="#"><i class="ec-mail"></i> 更多功能</a>
+
+					</li>
+					<li><a href="javascript:Exit();"><i class="im-images"></i>
+						退出登录</a></li>
+			</ul>
+		</div>
+	</div>
+	<!-- 左边栏结束 -->
+
+
+	<!-- 开始内容 -->
+	<div id="content">
+		<!-- Start .content-wrapper -->
+		<div class="content-wrapper">
+			<div class="row">
+				<!-- Start .row -->
+				<!-- Start .page-header -->
+				<!--   主页字 -->
+
+			</div>
+			<br>
+			<!-- End .row -->
+			<div class="outlet">
+				<!-- Start .outlet -->
+				<!-- Page start here ( usual with .row ) -->
+				<div class="row">
+					<div class="col-lg-12">
+						<!-- col-lg-12 start here -->
+						<div
+							class="panel panel-default plain toggle panelClose panelRefresh">
+							<!-- Start .panel -->
+							<div class="panel-heading white-bg">
+								<h2 style="line-height: 21px;color: #A8E8E8;font-weight: bold;">
+									<i class="im-screen"></i>&nbsp; 主页
+								</h2>
+								<hr color=" red" style=" height: " size="10px" />
+								<button class="btn btn-success" id="SearchAll">查询所有餐桌</button>
+								&nbsp;&nbsp;&nbsp;&nbsp;
+								<button class="btn btn-success" id="SearchEmpty">查询空位餐桌</button>
+								&nbsp;&nbsp;&nbsp;&nbsp;
+								<button class="btn btn-success" id="SearchDinning">查询就餐餐桌</button>
+								<!-- 查询按钮 -->
+								<input type="text" class="form-control input-large"
+									id="SearchContent" placeholder="请输入餐桌名称"
+									style="position: absolute;right:30px;top:83px;"><i class="ec-search s20" style="position: absolute;right:250px;top:90px"></i>
+<!-- 								<button class="btn btn-dark" id="SearchBtn" -->
+<!-- 									style="position: absolute;right:30px;top:83px;float: right">查询</button> -->
+							</div>
+							<div class="panel-body">
+								<table class="table display">
+									<tbody id="DeskTbody">
+									</tbody>
+								</table>
+								<br> <br>
+								<div>
+									<!-- 中间的数字 -->
+									<span id="ShowHowManyItems"
+										style="line-height: 35px;color: #A8E8E8;font-size: 30px;font-weight: bolder ;position: absolute; left:40%; bottom:17px ;"></span>
+									<button class="btn btn-xs btn-purple" id="GoToFrontPage"
+										style="width: 70px;height: 40px;float: left;">上一页</button>
+									<button class="btn btn-xs btn-purple" id="GoToNextPage"
+										style="width: 70px;height: 40px;float: right;">下一页</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- 点菜显示菜单 -->
+	<div id="ordering" class="popBox"
+		style="width: 100%;height: 100%;border:black solid 3px ">
+
+		<div
+			style="width: 100%;height: 6%;padding:3px;background:black;text-align: center;">
+
+			<label id="tableNoShow"
+				style="font-size:30px;line-height:30px;color:white;position: fixed;top: 3%;left: 50%;transform: translateX(-50%) translateY(-50%);"></label>
+			<a href="javascript:void(0)" title="关闭窗口" class="close_btn"
+				style="float:right;color:white;" id="closeOrdering">×</a>
+			<button class="btn btn-lg btn-success" id="CheckOrder"
+				style="float:left;margin:auto;">查看已选菜品</button>
+			<span id="showCuisineSelected" style="color:yellow; font-size: 30px;position: fixed;top: 2.8%;left: 10%;transform: translateX(-50%) translateY(-50%);"></span>
+			<select id="MenuSelect" style="width:250px;margin:5px ;float:right;"
+				class="form-control">
+			</select>
+		</div>
+			<table style="width: 100%; overflow-y: auto;">
+				<tbody id="CuisineTbody">
+				</tbody>
+			</table>
+		<div
+			style="height: 10%; width:99%;margin: 30px;text-align: center;position:fixed;top:96.5%;left: 48.38%;transform: translateX(-50%) translateY(-50%);">
+			<span id="ShowHowManyCuisine" class="btn-success"
+				style="line-height: 40px;color: white;font-size: 40px;font-weight: bold ;"></span>
+			<button id="GetFrontPageCuisine" class="btn btn-xs btn-purple"
+				style="width: 70px;height: 40px;float: left">上一页</button>
+			<button id="GetNextPageCuisine" class="btn btn-xs btn-purple"
+				style="width: 70px;height: 40px;float: right">下一页</button>
+		</div>
+
+	</div>
+	<!-- 下过单的菜品信息显示 -->
+	<div id="ordered" class="popBox" style="width: 100%;height: 100%; border: 0px ">
+		<div
+			style="width: 100%;height: 6%;padding:3px;background:black;text-align: center;">
+
+			<label id="tableNo"
+				style="font-size:30px;line-height:30px;color:white;position: fixed;top: 3%;left: 50%;transform: translateX(-50%) translateY(-50%);"></label>
+			<a href="javascript:void(0)" title="关闭窗口" class="close_btn"
+				style="float:right;color:white;" id="closeOrdered">×</a>
+			<button class="btn btn-lg btn-success" id="Settlement"
+				style="float:left;margin:3px;">结账</button>
+		</div>
+		<div id="orderedList" style="overflow-y: auto;height: 94%">
+
+		</div>
+
+	</div>
+
+	<!-- 已点菜品显示 -->
+	<div class="popBox" id="finally" style="width: 100%;height: 100%;text-align: center">
+	<div style="width: 100%;height: 6%;padding:3px;background:black;text-align: center;">
+		<a href="javascript:void(0)" title="关闭窗口" class="close_btn"
+			id="finallyClosed">×</a>
+		<button id='orderConfirmed' class="btn btn-lg btn-success" style="float: left;margin: 3px">确认下单</button>
+		</div>
+		<div id="SpecificContent" style="overflow-y: auto;height: 94%">
+		</div>
+
+
+	</div>
+	<!-- 确认结账显示 -->
+	<div class="popBox" id="settleConfirm">
+		<a href="javascript:void(0)" title="关闭窗口" class="close_btn"
+			id="closeSettle">×</a>
+		<button class="btn btn-primary" id="losingThisOrder"style="float:left;margin: 10px">丢单</button>
+
+		<div id="txtName" style="top:30%">
+			<input type="text" class="form-control input-medium"
+				id="shouldPay" disabled="disabled" />
+		</div>
+<!-- 		<div id="txtName" style="top:40%"> -->
+<!-- 			<input type="text" id="discount" class="form-control input-medium" -->
+<!-- 				 placeholder="请输入折扣" /> -->
+<!-- 		</div> -->
+
+		<div id="txtPwd" style="top:45%">
+			<input type="text" id="paidFinally" class="form-control input-medium"
+				 placeholder="请输入实收金额" />
+		</div>
+		<span title="提示" class="warning" id="warning1"></span>
+
+		<input type="button" id="settled" class="btn btn-lg btn-magenta" value="结账"
+			style="position: fixed;	top: 60%;left: 50%;transform: translateX(-50%) translateY(-50%);"">
+
+	</div>
+
+	<!-- 删除确认框 -->
+		<!-- 删除确认框 -->
+		<div id="ConfirmDelete">
+			<Strong class="ConfirmationContent" id="inUsing">确认删除吗？</Strong>
+			<button id="delConfirmed" class="myButton myBlack bigRounded blarge">确认</button>
+			<button id="delCanceled" class="myButton myBlack bigRounded blarge">取消</button>
+		</div>
+		<!-- 修改确认框 -->
+		<div id="ConfirmAmend">
+			<Strong class="ConfirmationContent">确认修改吗？</Strong>
+			<button id="amdConfirmed" class="myButton myBlack bigRounded blarge">确认</button>
+			<button id="amdCanceled" class="myButton myBlack bigRounded blarge">取消</button>
+		</div>
+		<!-- 添加成功弹跳框 -->
+		<div id="SuccessShow">
+			<h2 id="SuccessContent"></h2>
+			<img id="showImage" src="images/succes.gif">
+		</div>
+
+		<!-- End .content-wrapper -->
+		<div class="clearfix"></div>
+		<!-- End #content -->
+</body>
+
+</html>

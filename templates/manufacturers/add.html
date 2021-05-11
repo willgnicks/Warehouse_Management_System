@@ -1,0 +1,88 @@
+{% extends 'layout/base.html' %}
+
+{% block page_title %}
+    <div class="title_left">
+        <h3>供应商管理</h3>
+    </div>
+{% endblock %}
+{% block content_title %}
+    <h2>新增供应商&nbsp;
+        <small>
+            <a class="fa fa-angle-double-right"></a>
+            &nbsp;&nbsp;
+        </small>
+
+    </h2>
+
+{% endblock %}
+{% block content %}
+    <div class="x_content">
+        <form action="{% url 'manufacturer_related:add_manufacturer' %}" method="post" novalidate>
+            {% csrf_token %}
+            <div class="field item form-group">
+                <label class="col-form-label col-md-3 col-sm-3  label-align">供应商名<span
+                        class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <input class="form-control" name="manufacturer_name" placeholder="上海震旦"
+                           value="{{ manufacturers.manufacturer_name.value }}"
+                           required="required"/>
+                    <span style="color: red; font-weight: bold">{{ manufacturers.manufacturer_name.errors.0 }}</span>
+                </div>
+            </div>
+            <div class="field item form-group">
+                <label class="col-form-label col-md-3 col-sm-3  label-align">联系人<span
+                        class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <input class="form-control" name="manufacturer_linkman" placeholder="孙老师"
+                           value="{{ manufacturers.manufacturer_linkman.value }}"/>
+                    <span style="color: red; font-weight: bold">{{ manufacturers.manufacturer_linkman.errors.0 }}</span>
+                </div>
+            </div>
+            <div class="field item form-group">
+                <label class="col-form-label col-md-3 col-sm-3  label-align">联系方式<span
+                        class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <input class="form-control" name="manufacturer_contact" data-validate-linked='phone'
+                           value="{{ manufacturers.manufacturer_contact.value }}" placeholder="固定座机或手机号码" required/>
+                    <span style="color: red; font-weight: bold">{{ manufacturers.manufacturer_contact.errors.0 }}</span>
+                </div>
+            </div>
+            <div class="field item form-group">
+                <label class="col-form-label col-md-3 col-sm-3  label-align">开始合作日期<span
+                        class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <input class="form-control" type="text" name="cooperation_begin_date"
+                           value="{{ manufacturers.cooperation_begin_date.value }}" placeholder="2020-10-30" required/>
+                    <span style="color: red; font-weight: bold">{{ manufacturers.cooperation_begin_date.errors.0 }}</span>
+                </div>
+            </div>
+            <div class="field item form-group">
+                <label class="col-form-label col-md-3 col-sm-3 label-align control-label">当前合作状态<span
+                        class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <div class="btn-round" data-toggle="buttons">
+                        <label class="btn btn-outline-success">
+                            <input type="radio" name="is_cooperated" value="True" class="join-btn">合作中
+                        </label>
+                        <label class="btn btn-outline-primary">
+                            <input type="radio" name="is_cooperated" value="False" class="join-btn">未合作
+                        </label>
+                        <span style="color: red; font-weight: bold">{{ manufacturers.is_cooperated.errors.0 }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="col-md-6 offset-md-3"></div>
+
+            <div class="ln_solid">
+                <div class="form-group">
+                    <br/>
+                    <div class="col-md-6 offset-md-3">
+                        <button type='submit' class="btn btn-danger">提 交</button>
+                        <button type='reset' class="btn btn-warning">重 置</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}

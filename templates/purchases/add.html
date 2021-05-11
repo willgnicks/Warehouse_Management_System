@@ -1,0 +1,139 @@
+{% extends 'layout/base.html' %}
+{% block page_title %}
+    <div class="title_left">
+        <h3>采购管理</h3>
+    </div>
+
+{% endblock %}
+{% block content_title %}
+    <h2>新增采购&nbsp;
+        <small>
+            <a class="fa fa-angle-double-right"></a>
+            &nbsp;&nbsp;采购产品选项增减
+        </small>
+
+    </h2>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <span id="plus" style="margin-top: 3px" class="fa fa-plus btn btn-outline-primary"></span>
+
+    <span id="minus" style="margin-top: 3px" class="fa fa-minus btn btn-outline-primary"></span>
+
+
+
+{% endblock %}
+{% block content %}
+    <div class="x_content">
+{#    "{% url 'purchase_related:add_purchase' %}"#}
+        <form action="" novalidate>
+            {% csrf_token %}
+            <div class="field item form-group">
+                <label class="col-form-label col-md-3 col-sm-3  label-align">采购单号<span
+                        class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <input class="form-control" name="form_number" placeholder="202003040020"
+                           required="required"/>
+                    <span style="color: red; font-weight: bold">{{ purchases.form_number.errors.0 }}</span>
+                </div>
+            </div>
+            <div class="field item form-group">
+                <label class="col-form-label col-md-3 col-sm-3  label-align">合同编号<span
+                        class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <input class="form-control" name="contract_number" type="text" placeholder="CS-CG-20200904-0024"
+                           />
+                    <span style="color: red; font-weight: bold">{{ purchases.contract_number.errors.0 }}</span>
+                </div>
+            </div>
+            <div class="field item form-group">
+                <label class="col-form-label col-md-3 col-sm-3  label-align">所属项目<span
+                        class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <select class="form-control" name="project">
+                        <option>请选择</option>
+                        {% for project in projects %}
+                            <option value="{{ project.id }}">{{ project.project_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div name="product_unit" class="field item form-group">
+                <label class="col-form-label col-md-3 col-sm-3 label-align">采购产品<span
+                        class="required">*</span></label>
+                <div class="col-md-4 col-sm-4">
+                    <select class="form-control" name="product">
+                        <option>请选择</option>
+                        {% for product in products %}
+                            <option value="{{ product.id }}">{{ product.product_name }} {{ product.product_model }}</option>
+                        {% endfor %}
+                    </select>
+                    <span style="color: red; font-weight: bold">{{ purchases.product.errors.0 }}</span>
+                </div>
+                <label class="col-form-label col-sm-1" style="text-align: center">数量<span
+                        class="required">*</span></label>
+                <div class="col-md-1 col-sm-1">
+                    <input class="form-control" name="quantity" value="{{ purchases.quantity.value }}"
+                           required/>
+                    <span style="color: red; font-weight: bold">{{ purchases.quantity.errors.0 }}</span>
+
+                </div>
+            </div>
+            <div class="field item form-group">
+                <label class="col-form-label col-md-3 col-sm-3  label-align">需求人<span
+                    class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <input class="form-control" name="demand_person"
+                           required/>
+                    <span style="color: red; font-weight: bold" id="demand_person_error"></span>
+                </div>
+            </div>
+            <div class="field item form-group">
+                <label class="col-form-label col-md-3 col-sm-3  label-align">经手人<span
+                    class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <input class="form-control" name="handle_man" required/>
+                    <span style="color: red; font-weight: bold" id="handle_man_error"></span>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="col-md-6 offset-md-3"></div>
+            <div class="ln_solid">
+                <div class="form-group">
+                    <br/>
+                    <div class="col-md-6 offset-md-3">
+                        <button id="go_add" type="button" class="btn btn-danger">提 交</button>
+                        <button type='reset' class="btn btn-warning">重 置</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+{% block javascript %}
+    <script src="/static/custom/purchase_add.js"></script>
+{% endblock %}
+            {#            <div class="field item form-group">#}
+            {#                <label class="col-form-label col-md-3 col-sm-3 label-align">采购产品<span#}
+            {#                        class="required">*</span></label>#}
+            {#                <div class="col-md-4 col-sm-4">#}
+            {#                    <select class="form-control" name="product">#}
+            {#                        <option>请选择</option>#}
+            {#                        {% for product in products %}#}
+            {#                            <option value="{{ product.id }}">{{ product.product_name }} {{ product.unit_price }}元</option>#}
+            {#                        {% endfor %}#}
+            {#                    </select>#}
+            {#                    <span style="color: red; font-weight: bold">{{ purprorel.product.errors.0 }}</span>#}
+            {#                </div>#}
+            {#                <label class="col-form-label" style="text-align: center">数量<span#}
+            {#                        class="required">*</span></label>#}
+            {#                <div style="width: 80px;margin-left: 10px">#}
+            {#                    <input class="form-control" name="quantity"#}
+            {#                           value="{{ purprorel.quantity.value }}"#}
+            {#                           required/>#}
+            {#                    <span style="color: red; font-weight: bold">{{ purprorel.quantity.errors.0 }}</span>#}
+            {#                </div>#}
+            {#                <div style="width: 39px;margin-left: 12px; height: 39px">#}
+            {#                    <h2 style="margin-top: 3px">#}
+            {#                        <span id='plus' class="fa fa-plus btn btn-outline-primary"></span>#}
+            {#                    </h2>#}
+            {#                </div>#}
+            {#            </div>#}
