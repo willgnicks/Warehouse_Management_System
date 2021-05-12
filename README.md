@@ -1,2 +1,2 @@
 # gnicks
-this is private repository
+Django仓库系统
