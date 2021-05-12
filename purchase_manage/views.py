@@ -52,10 +52,19 @@ class PurchaseForm(Form):
 #         exclude = ['purchase_date', 'purchase']
 #         error_messages = {
 #             'quantity': {'required': '不空'}
-#         }
+#        d }
+
+def check_occupy(request, keyword='form_number'):
+    pass
 
 
-# Create your views here.
+def get_and_update(request, pk=1):
+    if request.method == 'GET':
+        purchase = Purchase.objects.filter(id=pk).first()
+        return render(request, 'purchases/add.html',
+                      {'purchase': purchase, 'products': get_products_list(), 'projects': get_projects_list()})
+    else:
+        pass
 
 
 def get_products_list():

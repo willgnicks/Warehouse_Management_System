@@ -23,7 +23,7 @@
 {% endblock %}
 {% block content %}
     <div class="x_content">
-{#    "{% url 'purchase_related:add_purchase' %}"#}
+        {#    "{% url 'purchase_related:add_purchase' %}"#}
         <form action="" novalidate>
             {% csrf_token %}
             <div class="field item form-group">
@@ -31,8 +31,9 @@
                         class="required">*</span></label>
                 <div class="col-md-6 col-sm-6">
                     <input class="form-control" name="form_number" placeholder="202003040020"
-                           required="required"/>
-                    <span style="color: red; font-weight: bold">{{ purchases.form_number.errors.0 }}</span>
+                           value="{{ purchase.form_number }}"
+                           required/>
+                    <span style="color: red; font-weight: bold"></span>
                 </div>
             </div>
             <div class="field item form-group">
@@ -40,57 +41,124 @@
                         class="required">*</span></label>
                 <div class="col-md-6 col-sm-6">
                     <input class="form-control" name="contract_number" type="text" placeholder="CS-CG-20200904-0024"
-                           />
-                    <span style="color: red; font-weight: bold">{{ purchases.contract_number.errors.0 }}</span>
+                    value="{{ purchase.contract_number }}"/>
+                    <span style="color: red; font-weight: bold"></span>
                 </div>
             </div>
-            <div class="field item form-group">
-                <label class="col-form-label col-md-3 col-sm-3  label-align">所属项目<span
-                        class="required">*</span></label>
-                <div class="col-md-6 col-sm-6">
-                    <select class="form-control" name="project">
-                        <option>请选择</option>
-                        {% for project in projects %}
-                            <option value="{{ project.id }}">{{ project.project_name }}</option>
-                        {% endfor %}
-                    </select>
+            {% if purchase is not null %}
+                <div class="field item form-group">
+                    <label class="col-form-label col-md-3 col-sm-3  label-align">所属项目<span
+                            class="required">*</span></label>
+                    <div class="col-md-6 col-sm-6">
+                        <select class="form-control" name="project">
+                            <option>请选择</option>
+                            {% if purchase.project != null %}
+                                {% with this_project_id=purchase.project.id %}
+                                    {% for project in projects %}
+                                        {% if this_project_id == project.id %}
+                                            <option selected="selected"
+                                                    value="{{ project.id }}">{{ project.project_name }}</option>
+                                        {% else %}
+                                            <option
+                                                    value="{{ project.id }}">{{ project.project_name }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endwith %}
+                            {% else %}
+                                {% for project in projects %}
+                                    <option value="{{ project.id }}">{{ project.project_name }}</option>
+                                {% endfor %}
+                            {% endif %}
+                        </select>
+                    </div>
                 </div>
-            </div>
-            <div name="product_unit" class="field item form-group">
-                <label class="col-form-label col-md-3 col-sm-3 label-align">采购产品<span
-                        class="required">*</span></label>
-                <div class="col-md-4 col-sm-4">
-                    <select class="form-control" name="product">
-                        <option>请选择</option>
-                        {% for product in products %}
-                            <option value="{{ product.id }}">{{ product.product_name }} {{ product.product_model }}</option>
-                        {% endfor %}
-                    </select>
-                    <span style="color: red; font-weight: bold">{{ purchases.product.errors.0 }}</span>
-                </div>
-                <label class="col-form-label col-sm-1" style="text-align: center">数量<span
-                        class="required">*</span></label>
-                <div class="col-md-1 col-sm-1">
-                    <input class="form-control" name="quantity" value="{{ purchases.quantity.value }}"
-                           required/>
-                    <span style="color: red; font-weight: bold">{{ purchases.quantity.errors.0 }}</span>
+                {% with set=purchase.purchaseproductrel_set.all %}
+                    {% for rel in set %}
+                        {% with this_product_id=rel.product.id %}
+                            <div name="product_unit" class="field item form-group">
+                                <label class="col-form-label col-md-3 col-sm-3 label-align">采购产品<span
+                                        class="required">*</span></label>
+                                <div class="col-md-4 col-sm-4">
+                                    <select class="form-control" name="product">
+                                        <option>请选择</option>
+                                        {% for product in products %}
+                                            {% if product.id == this_product_id %}
+                                                <option value="{{ product.id }}"
+                                                        selected>{{ product.product_name }} {{ product.product_model }}</option>
+                                            {% else %}
+                                                <option value="{{ product.id }}"
+                                                >{{ product.product_name }} {{ product.product_model }}</option>
+                                            {% endif %}
+                                        {% endfor %}
 
+                                    </select>
+                                    <span style="color: red; font-weight: bold"></span>
+                                    <span id="purchase_id" style="display:none">{{ purchase.id }}</span>
+                                    <span id="product_len" style="display:none">{{ set.count }}</span>
+                                </div>
+
+                                <label class="col-form-label col-sm-1" style="text-align: center">数量<span
+                                        class="required">*</span></label>
+                                <div class="col-md-1 col-sm-1">
+                                    <input class="form-control" name="quantity" value="{{ rel.quantity }}"
+                                           required/>
+                                    <span style="color: red; font-weight: bold"></span>
+
+                                </div>
+                            </div>
+                        {% endwith %}
+                    {% endfor %}
+                {% endwith %}
+            {% else %}
+                <div class="field item form-group">
+                    <label class="col-form-label col-md-3 col-sm-3  label-align">所属项目<span
+                            class="required">*</span></label>
+                    <div class="col-md-6 col-sm-6">
+                        <select class="form-control" name="project">
+                            <option>请选择</option>
+                                {% for project in projects %}
+                                    <option value="{{ project.id }}">{{ project.project_name }}</option>
+                                {% endfor %}
+                        </select>
+                    </div>
                 </div>
-            </div>
+                <div name="product_unit" class="field item form-group">
+                    <label class="col-form-label col-md-3 col-sm-3 label-align">采购产品<span
+                            class="required">*</span></label>
+                    <div class="col-md-4 col-sm-4">
+                        <select class="form-control" name="product">
+                            <option>请选择</option>
+                            {% for product in products %}
+                                <option value="{{ product.id }}">{{ product.product_name }} {{ product.product_model }}</option>
+                            {% endfor %}
+                        </select>
+                        <span style="color: red; font-weight: bold"></span>
+                    </div>
+
+                    <label class="col-form-label col-sm-1" style="text-align: center">数量<span
+                            class="required">*</span></label>
+                    <div class="col-md-1 col-sm-1">
+                        <input class="form-control" name="quantity" value="{{ purchases.quantity.value }}"
+                               required/>
+                        <span style="color: red; font-weight: bold">{{ purchases.quantity.errors.0 }}</span>
+
+                    </div>
+                </div>
+            {% endif %}
             <div class="field item form-group">
                 <label class="col-form-label col-md-3 col-sm-3  label-align">需求人<span
-                    class="required">*</span></label>
+                        class="required">*</span></label>
                 <div class="col-md-6 col-sm-6">
-                    <input class="form-control" name="demand_person"
+                    <input class="form-control" name="demand_person" value="{{ purchase.demand_person }}"
                            required/>
                     <span style="color: red; font-weight: bold" id="demand_person_error"></span>
                 </div>
             </div>
             <div class="field item form-group">
                 <label class="col-form-label col-md-3 col-sm-3  label-align">经手人<span
-                    class="required">*</span></label>
+                        class="required">*</span></label>
                 <div class="col-md-6 col-sm-6">
-                    <input class="form-control" name="handle_man" required/>
+                    <input class="form-control" name="handle_man" value="{{ purchase.handle_man }}" required/>
                     <span style="color: red; font-weight: bold" id="handle_man_error"></span>
                 </div>
             </div>
@@ -111,29 +179,29 @@
 {% block javascript %}
     <script src="/static/custom/purchase_add.js"></script>
 {% endblock %}
-            {#            <div class="field item form-group">#}
-            {#                <label class="col-form-label col-md-3 col-sm-3 label-align">采购产品<span#}
-            {#                        class="required">*</span></label>#}
-            {#                <div class="col-md-4 col-sm-4">#}
-            {#                    <select class="form-control" name="product">#}
-            {#                        <option>请选择</option>#}
-            {#                        {% for product in products %}#}
-            {#                            <option value="{{ product.id }}">{{ product.product_name }} {{ product.unit_price }}元</option>#}
-            {#                        {% endfor %}#}
-            {#                    </select>#}
-            {#                    <span style="color: red; font-weight: bold">{{ purprorel.product.errors.0 }}</span>#}
-            {#                </div>#}
-            {#                <label class="col-form-label" style="text-align: center">数量<span#}
-            {#                        class="required">*</span></label>#}
-            {#                <div style="width: 80px;margin-left: 10px">#}
-            {#                    <input class="form-control" name="quantity"#}
-            {#                           value="{{ purprorel.quantity.value }}"#}
-            {#                           required/>#}
-            {#                    <span style="color: red; font-weight: bold">{{ purprorel.quantity.errors.0 }}</span>#}
-            {#                </div>#}
-            {#                <div style="width: 39px;margin-left: 12px; height: 39px">#}
-            {#                    <h2 style="margin-top: 3px">#}
-            {#                        <span id='plus' class="fa fa-plus btn btn-outline-primary"></span>#}
-            {#                    </h2>#}
-            {#                </div>#}
-            {#            </div>#}
+{#            <div class="field item form-group">#}
+{#                <label class="col-form-label col-md-3 col-sm-3 label-align">采购产品<span#}
+{#                        class="required">*</span></label>#}
+{#                <div class="col-md-4 col-sm-4">#}
+{#                    <select class="form-control" name="product">#}
+{#                        <option>请选择</option>#}
+{#                        {% for product in products %}#}
+{#                            <option value="{{ product.id }}">{{ product.product_name }} {{ product.unit_price }}元</option>#}
+{#                        {% endfor %}#}
+{#                    </select>#}
+{#                    <span style="color: red; font-weight: bold">{{ purprorel.product.errors.0 }}</span>#}
+{#                </div>#}
+{#                <label class="col-form-label" style="text-align: center">数量<span#}
+{#                        class="required">*</span></label>#}
+{#                <div style="width: 80px;margin-left: 10px">#}
+{#                    <input class="form-control" name="quantity"#}
+{#                           value="{{ purprorel.quantity.value }}"#}
+{#                           required/>#}
+{#                    <span style="color: red; font-weight: bold">{{ purprorel.quantity.errors.0 }}</span>#}
+{#                </div>#}
+{#                <div style="width: 39px;margin-left: 12px; height: 39px">#}
+{#                    <h2 style="margin-top: 3px">#}
+{#                        <span id='plus' class="fa fa-plus btn btn-outline-primary"></span>#}
+{#                    </h2>#}
+{#                </div>#}
+{#            </div>#}

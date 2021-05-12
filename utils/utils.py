@@ -11,6 +11,7 @@ def get_model_name(klass):
 
 
 def get_model_name_from_modelform(klass):
+    # python 3.9以上可以使用removesuffix('form')代替[:-4]
     return klass.__name__.lower()[:-4] + 's'
 
 

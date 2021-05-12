@@ -47,33 +47,95 @@
         {% for purchase in purchases %}
             {% with index=forloop.counter %}
                 {% with set=purchase.purchaseproductrel_set.all %}
-                    {% for rel in set %}
-                        <tr>
-                            <td>{{ index}}</td>
-                            <td>{{ purchase.form_number }}</td>
-                            <td>{{ purchase.contract_number }}</td>
-                            <td>{{ purchase.project.project_name }}</td>
-                            <td>{{ rel.product.product_name }}</td>
-                            <td>{{ rel.product.product_model }}</td>
-                            <td>{{ rel.product.unit_price }}</td>
-                            <td>{{ rel.quantity }}</td>
-                            <td>{{ rel.product.manufacturer.manufacturer_name }}</td>
-                            <td>{{ purchase.purchase_date | date:"Y-m-d" }}</td>
-                            <td>{{ purchase.demand_person }}</td>
-                            <td>{{ purchase.handle_man }}</td>
-                            <td><a href="" class="fa fa-edit"
-                                   name={{ user.id }}></a>&nbsp;&nbsp;
-                                <a href="" class="fa fa-trash"
-                                   name="{{ user.id }}"></a>
-                            </td>
-                        </tr>
-                    {% endfor %}
+                    {% with rowcount=set.count %}
+                        {% if rowcount > 1 %}
+                            <tr>
+                                <td rowspan="{{ rowcount }}"
+                                    style="vertical-align: middle;border: solid rgba(68,79,87,0.21) 1px;">{{ forloop.counter }}</td>
+                                <td rowspan="{{ rowcount }}"
+                                    style="vertical-align: middle;border: solid rgba(68,79,87,0.21) 1px;">{{ purchase.form_number }}</td>
+                                <td rowspan="{{ rowcount }}"
+                                    style="vertical-align: middle;border: solid rgba(68,79,87,0.21) 1px;">{{ purchase.contract_number }}</td>
+                                <td rowspan="{{ rowcount }}"
+                                    style="vertical-align: middle;border: solid rgba(68,79,87,0.21) 1px;">{{ purchase.project.project_name }}</td>
+                                <td>{{ set.0.product.product_name }}</td>
+                                <td>{{ set.0.product.product_model }}</td>
+                                <td>{{ set.0.product.unit_price }}</td>
+                                <td>{{ set.0.quantity }}</td>
+                                <td>{{ set.0.product.manufacturer.manufacturer_name }}</td>
+                                <td rowspan="{{ rowcount }}"
+                                    style="vertical-align: middle;border: solid rgba(68,79,87,0.21) 1px;">{{ purchase.purchase_date | date:"Y-m-d" }}</td>
+                                <td rowspan="{{ rowcount }}"
+                                    style="vertical-align: middle;border: solid rgba(68,79,87,0.21) 1px;">{{ purchase.demand_person }}</td>
+                                <td rowspan="{{ rowcount }}"
+                                    style="vertical-align: middle;border: solid rgba(68,79,87,0.21) 1px;">{{ purchase.handle_man }}</td>
+                                <td rowspan="{{ rowcount }}"
+                                    style="vertical-align: middle;border: solid rgba(68,79,87,0.21) 1px;"><a
+                                        href="{% url 'purchase_related:get_and_update_purchase' pk=purchase.id %}" class="fa fa-edit"
+                                        name={{ user.id }}></a>&nbsp;&nbsp;
+                                    <a href="" class="fa fa-trash"
+                                       name="{{ user.id }}"></a>
+                                </td>
+                            </tr>
+
+                            {% for rel in set %}
+                                {% if forloop.counter > 1 %}
+                                    <tr>
+                                        <td>{{ rel.product.product_name }}</td>
+                                        <td>{{ rel.product.product_model }}</td>
+                                        <td>{{ rel.product.unit_price }}</td>
+                                        <td>{{ rel.quantity }}</td>
+                                        <td>{{ rel.product.manufacturer.manufacturer_name }}</td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ purchase.form_number }}</td>
+                                <td>{{ purchase.contract_number }}</td>
+                                <td>{{ purchase.project.project_name }}</td>
+                                <td>{{ purchase.product.product_name }}</td>
+                                <td>{{ purchase.product.product_model }}</td>
+                                <td>{{ purchase.product.unit_price }}</td>
+                                <td>{{ purchase.quantity }}</td>
+                                <td>{{ purchase.purchase_date | date:"Y-m-d" }}</td>
+                                <td>{{ purchase.product.manufacturer.manufacturer_name }}</td>
+                                <td>{{ purchase.demand_person }}</td>
+                                <td>{{ purchase.handle_man }}</td>
+                                <td><a href="{% url 'purchase_related:get_and_update_purchase' pk=purchase.id %}" class="fa fa-edit"
+                                       name={{ user.id }}></a>&nbsp;&nbsp;
+                                    <a href="" class="fa fa-trash"
+                                       name="{{ user.id }}"></a>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endwith %}
+                    {#                    {% for rel in set %}#}
+                    {#                        <tr>#}
+                    {#                            <td>{{ index}}</td>#}
+                    {#                            <td>{{ purchase.form_number }}</td>#}
+                    {#                            <td>{{ purchase.contract_number }}</td>#}
+                    {#                            <td>{{ purchase.project.project_name }}</td>#}
+                    {#                            <td>{{ rel.product.product_name }}</td>#}
+                    {#                            <td>{{ rel.product.product_model }}</td>#}
+                    {#                            <td>{{ rel.product.unit_price }}</td>#}
+                    {#                            <td>{{ rel.quantity }}</td>#}
+                    {#                            <td>{{ rel.product.manufacturer.manufacturer_name }}</td>#}
+                    {#                            <td>{{ purchase.purchase_date | date:"Y-m-d" }}</td>#}
+                    {#                            <td>{{ purchase.demand_person }}</td>#}
+                    {#                            <td>{{ purchase.handle_man }}</td>#}
+                    {#                            <td><a href="" class="fa fa-edit"#}
+                    {#                                   name={{ user.id }}></a>&nbsp;&nbsp;#}
+                    {#                                <a href="" class="fa fa-trash"#}
+                    {#                                   name="{{ user.id }}"></a>#}
+                    {#                            </td>#}
+                    {#                        </tr>#}
+                    {#                    {% endfor %}#}
 
                 {% endwith %}
             {% endwith %}
         {% endfor %}
-
-
         </tbody>
     </table>
 {% endblock %}
