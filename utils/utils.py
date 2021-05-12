@@ -1,6 +1,6 @@
 import time
 from datetime import datetime
-
+import string
 from django.core.paginator import Paginator
 from django.shortcuts import render, HttpResponseRedirect
 from django.urls import reverse
@@ -11,7 +11,7 @@ def get_model_name(klass):
 
 
 def get_model_name_from_modelform(klass):
-    return klass.__name__.lower().removesuffix('form') + 's'
+    return klass.__name__.lower()[:-4] + 's'
 
 
 def get_all(request, klass, **kwargs):

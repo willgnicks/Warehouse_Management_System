@@ -64,9 +64,9 @@ def login(request):
                 if user_instance.status == '启用':
                     # session域添加信息
                     # print('im adding username to session')
-                    print('you are visiting login method')
-                    print(date.today())
-                    print(datetime.today())
+                    # print('you are visiting login method')
+                    # print(date.today())
+                    # print(datetime.today())
                     request.session['username'] = user_instance.name
                     request.session['type'] = user_instance.type
                     # print(request.META)
