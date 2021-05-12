@@ -253,7 +253,7 @@ $(function ($) {
     });
 
     $("#go_add").click(function () {
-        if (valid_form(fields, exclude)) {
+        if (valid_form()) {
             console.log(cleaned_data)
             let project_val = $("select[name='project']").val()
             if (project_val != '请选择') {
