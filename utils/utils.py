@@ -4,6 +4,7 @@ import string
 from django.core.paginator import Paginator
 from django.shortcuts import render, HttpResponseRedirect
 from django.urls import reverse
+from django.db.models import Q
 
 
 def get_model_name(klass):
@@ -18,32 +19,55 @@ def get_model_name_from_modelform(klass):
 def get_all(request, klass, **kwargs):
     """
     :param request:
-    :param klass: 传入检索的类名
-    :param kwargs: 传入同model类的类名全小写加s，生成html的路径，并且生成用来生成字典的key方便html渲染
+    :param klass: 传入检索的类名 传入同model类的类名全小写加s，生成html的路径，并且生成用来生成字典的key方便html渲染
+    :param kwargs: 传入搜索query关键字， 传入对多的关系queryset
     :return:
     """
     # 获取实参类的类名
     class_name = get_model_name(klass=klass)
-    # 生成分页器
-    print(time.time())
-    # paginator = {}
-    # if class_name == 'users':
-    #     paginator = Paginator(klass.objects.all(), 10)
-    # else:
-    paginator = Paginator(klass.objects.all().filter(flag=True), 10)
-    # get方法的html路径
-
     template_url = f'{class_name}/{class_name}.html'
+    print(time.time())
+    # 查询结果集
+    queryset = klass.objects.all().filter(flag=True)
+    # 生成分页器
+    paginator = Paginator(queryset, 10)
+    # 生成页面数
+    page_number = request.GET.get('page') if request.GET.get('page') is not None else 1
+    # 获取页面数据
+    page_data = get_pageData(paginator, pageNumber=page_number)
+    # 获取关系
+    print(kwargs)
+    rel = list(kwargs.get('kwargs'))[0] if kwargs else None
+    print(rel)
+    rel_val = kwargs.get('kwargs').get(rel) if rel is not None else None
+    rel_set = []
+    # 如果有关系参数，那么返回该关系参数的结果集
+    if rel_val is not None:
+        for index in range(len(queryset)):
+            rel_set.insert(index, queryset[index].__getattribute__(rel_val))
+    for r in rel_set:
+        print(r)
     print(class_name, '&', template_url)
-    if request.GET.get('page') is None:
-        query_data = paginator.page(1)
-        print(time.time())
-    else:
-        query_data = paginator.page(request.GET.get('page'))
+    print(time.time())
     return render(request,
                   template_url,
-                  {class_name: query_data, 'count': paginator.count}
+                  {
+                      'count': paginator.count,
+                      class_name: page_data,
+                      rel: rel_set
+                  }
                   )
+
+
+def get_pageData(paginator, pageNumber):
+    # if request.GET.get('page') is None:
+    #     query_data = paginator.page(1)
+    #     for data in query_data:
+    #         print(data)
+    #     print(time.time())
+    # else:
+    # return query_data
+    return paginator.page(pageNumber)
 
 
 def put_one(request, form_class, **kwargs):
@@ -55,6 +79,7 @@ def put_one(request, form_class, **kwargs):
     """
     # 获取表单类中的模型类名
     model_name = get_model_name_from_modelform(form_class)
+    print(model_name)
     # put方法的html路径
     template_url = f'{model_name}/add.html'
     # modelform表单实力化
@@ -68,10 +93,12 @@ def put_one(request, form_class, **kwargs):
         for klass in quote_class_list:
             quote_dic[get_model_name(klass)] = klass.objects.all()
     print(model_name, '&', template_url)
+    print(request.method)
     if request.method == 'GET':
         return render(request, template_url, quote_dic)
     else:
         if modelform_instance.is_valid():
+            print('add')
             modelform_instance.save()
             return HttpResponseRedirect(
                 reverse(

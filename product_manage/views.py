@@ -1,6 +1,8 @@
 from django.forms import ModelForm
+from django.shortcuts import render
+
 from product_manage.models import Product
-from utils.utils import get_all, put_one, delete_one
+from utils.utils import get_all, put_one, delete_one, get_pageData
 from manufacturer_manage.models import Manufacturer
 import json
 from django.http import JsonResponse
@@ -29,7 +31,21 @@ def ajax_all_products(request):
 
 
 def get_all_products(request):
-    return get_all(request=request, klass=Product)
+    return get_all(request=request, klass=Product, kwargs={'manufacturers': 'manufacturer'})
+    # url = query_set.get('url')
+    # paginator = query_set.get('paginator')
+    # page_number = request.GET.get('page') if request.GET.get('page') is not None else 1
+    # page_data = get_pageData(paginator, pageNumber=page_number)
+    # manu = Product.objects.all()
+    # m = []
+    # ran = len(manu) - 1
+    # print(ran)
+    # for i in range(ran):
+    #     m.insert(i, manu[i].manufacturer)
+    #     print(manu[i].manufacturer)
+    # count = paginator.count
+    # print(m)
+    # return render(request, url, {'count': count, 'products': page_data, 'manufacturers': 'else'})
 
 
 def add_product(request):

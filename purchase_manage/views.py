@@ -1,6 +1,7 @@
 import json
 import time
 
+from django.core.paginator import Paginator
 from django.forms import ModelForm, Form, fields
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, reverse
@@ -8,7 +9,7 @@ from django.shortcuts import render, reverse
 from purchase_manage.models import Purchase
 from product_manage.models import Product, PurchaseProductRel
 from project_manage.models import Project
-from utils.utils import get_all, put_one
+from utils.utils import get_all, put_one, get_pageData
 
 
 class PurchaseForm(Form):
@@ -33,27 +34,6 @@ class PurchaseForm(Form):
     })
 
 
-# class Meta:
-#     model = Purchase
-#     fields = '__all__'
-#     exclude = ['project', 'flag', 'product']
-#     error_messages = {
-#         'form_number': {'required': '请填入采购单号'},
-#         'contract_number': {'required': '请填入合同编号'},
-#         'demand_person': {'required': '请填入需求人'},
-#         'handle_man': {'required': '请填入经手人'},
-#     }
-
-#
-# class PurProRel(ModelForm):
-#     class Meta:
-#         model = PurchaseProductRel
-#         fields = '__all__'
-#         exclude = ['purchase_date', 'purchase']
-#         error_messages = {
-#             'quantity': {'required': '不空'}
-#        d }
-
 def check_occupy(request, keyword='form_number'):
     pass
 
@@ -76,7 +56,20 @@ def get_projects_list():
 
 
 def get_all_purchases(request):
-    return get_all(request, Purchase)
+    print(time.time())
+    purchases = Purchase.objects.all().filter(flag=True)
+    page_number = request.GET.get('page') if request.GET.get('page') is not None else 1
+    paginator = Paginator(purchases, 10)
+    page_data = get_pageData(paginator=paginator, pageNumber=page_number)
+    rel_set = []
+    for index in range(len(purchases)):
+        rel_set.insert(index, purchases[index].purchaseproductrel_set.all())
+    for rel in rel_set[0]:
+        print(rel.quantity)
+    print(time.time())
+    return render(request, 'purchases/purchases.html',
+                  {'purchases': page_data, 'rel_set': rel_set, 'count': paginator.count})
+    # return get_all(request=request, klass=Purchase, kwargs={'purchaseproductrel_set': 'purchaseproductrel_set'})
 
 
 def add_purchase(request):
@@ -136,3 +129,23 @@ def add_purchase(request):
 #                        'projects': get_projects_list()})
 # return put_one(request=request, form_class=PurchaseForm,
 #                kwargs={'quote_class': [Product, Project], 'reverse_url': 'purchase_related:all_purchase_details'})
+# class Meta:
+#     model = Purchase
+#     fields = '__all__'
+#     exclude = ['project', 'flag', 'product']
+#     error_messages = {
+#         'form_number': {'required': '请填入采购单号'},
+#         'contract_number': {'required': '请填入合同编号'},
+#         'demand_person': {'required': '请填入需求人'},
+#         'handle_man': {'required': '请填入经手人'},
+#     }
+
+#
+# class PurProRel(ModelForm):
+#     class Meta:
+#         model = PurchaseProductRel
+#         fields = '__all__'
+#         exclude = ['purchase_date', 'purchase']
+#         error_messages = {
+#             'quantity': {'required': '不空'}
+#        d }

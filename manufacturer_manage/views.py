@@ -19,7 +19,7 @@ class ManufacturerForm(ModelForm):
 
 # Create your views here.
 def get_all_manufacturers(request):
-    return get_all(request, Manufacturer)
+    return get_all(request=request, klass=Manufacturer)
 
 
 def add_manufacturer(request):

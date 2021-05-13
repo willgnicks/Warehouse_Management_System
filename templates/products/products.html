@@ -42,21 +42,29 @@
         </thead>
         <tbody>
         {% for product in products %}
+            {% with index=forloop.counter0 %}
 
-            <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ product.product_name }}</td>
-                <td>{{ product.product_model }}</td>
-                <td>{{ product.product_type }}</td>
-                <td>{{ product.unit_price }}</td>
-                <td>{{ product.manufacturer.manufacturer_name }}</td>
-                <td>{{ product.manufacturer.manufacturer_linkman }}</td>
-                <td>{{ product.manufacturer.manufacturer_contact }}</td>
-                <td><a href="" class="fa fa-edit" name={{ product.id }}></a>&nbsp;&nbsp;
-                    <a href="{% url 'product_related:delete_product' pk=product.id %}" class="fa fa-trash"
-                       name="{{ product.id }}"></a>
-                </td>
-            </tr>
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ product.product_name }}</td>
+                    <td>{{ product.product_model }}</td>
+                    <td>{{ product.product_type }}</td>
+                    <td>{{ product.unit_price }}</td>
+                    {% for manufacturer in manufacturers %}
+                        {% with i=forloop.counter0 %}
+                            {% if i == index %}
+                                <td>{{ manufacturer.manufacturer_name }}</td>
+                                <td>{{ manufacturer.manufacturer_linkman }}</td>
+                                <td>{{ manufacturer.manufacturer_contact }}</td>
+                            {% endif %}
+                        {% endwith %}
+                    {% endfor %}
+                    <td><a href="" class="fa fa-edit" name={{ product.id }}></a>&nbsp;&nbsp;
+                        <a href="{% url 'product_related:delete_product' pk=product.id %}" class="fa fa-trash"
+                           name="{{ product.id }}"></a>
+                    </td>
+                </tr>
+            {% endwith %}
         {% endfor %}
 
 
