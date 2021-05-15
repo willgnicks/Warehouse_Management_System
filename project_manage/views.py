@@ -25,6 +25,13 @@ def get_all_projects(request):
     return get_all(request=request, klass=Project)
 
 
+def get_query_projects(request):
+    query_data = request.GET.get('query') if request.GET.get('query') is not None else None
+    kwargs = {'project_name__contains': query_data,
+              'project_code__contains': query_data} if query_data is not None else {}
+    return get_all(request, Project, kwargs={'query': kwargs})
+
+
 def delete_project(request, pk=1):
     # Project.objects.filter(id=pk).update(flag=False)
     # return redirect(reverse('project_related:all_project_details'))

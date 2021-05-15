@@ -4,13 +4,14 @@
         <h3>项目管理</h3>
     </div>
     <div class="title_right" style="height: 51px">
+
         <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search" style="margin-top: 6px">
-            <div class="input-group">
-                <input type="text" class="form-control" placeholder="搜索...">
+            <form class="input-group" action="{% url 'project_related:get_query_project' %}" method="get">
+                <input type="text" class="form-control" name="query" placeholder="项目编号或项目名称">
                 <span class="input-group-btn">
-                          <button class="btn btn-secondary" type="button">Go!</button>
+                          <button class="btn btn-secondary" type="submit">搜索!</button>
                 </span>
-            </div>
+            </form>
         </div>
     </div>
 {% endblock %}

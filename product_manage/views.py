@@ -31,7 +31,14 @@ def ajax_all_products(request):
 
 
 def get_all_products(request):
-    return get_all(request=request, klass=Product, kwargs={'manufacturers': 'manufacturer'})
+    return get_all(request=request, klass=Product, kwargs={'rel': 'manufacturer'})
+
+
+def get_query_products(request):
+    query_data = request.GET.get('query') if request.GET.get('query') is not None else None
+    kwargs = {'product_name__icontains': query_data,
+              'product_model__icontains': query_data} if query_data is not None else {}
+    return get_all(request=request, klass=Product, kwargs={'rel': 'manufacturer', 'query': kwargs})
     # url = query_set.get('url')
     # paginator = query_set.get('paginator')
     # page_number = request.GET.get('page') if request.GET.get('page') is not None else 1

@@ -7,12 +7,12 @@
     </div>
     <div class="title_right" style="height: 51px">
         <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search" style="margin-top: 6px">
-            <div class="input-group">
-                <input type="text" class="form-control" placeholder="搜索...">
+            <form class="input-group" method="get" action="{% url 'product_related:get_query_products' %}">
+                <input type="text" class="form-control" name="query" placeholder="产品名称或产品型号">
                 <span class="input-group-btn">
-                          <button class="btn btn-secondary" type="button">Go!</button>
+                          <button class="btn btn-secondary" type="submit">搜索!</button>
                 </span>
-            </div>
+            </form>
         </div>
     </div>
 {% endblock %}
@@ -50,7 +50,7 @@
                     <td>{{ product.product_model }}</td>
                     <td>{{ product.product_type }}</td>
                     <td>{{ product.unit_price }}</td>
-                    {% for manufacturer in manufacturers %}
+                    {% for manufacturer in manufacturer %}
                         {% with i=forloop.counter0 %}
                             {% if i == index %}
                                 <td>{{ manufacturer.manufacturer_name }}</td>

@@ -56,8 +56,16 @@ def get_projects_list():
 
 
 def get_all_purchases(request):
+    # query = request.GET.get('query') if request.GET.get("query") is not None else None
+    query = 'c'
+    kwargs = {}
+    if query is not None:
+        kwargs['contract_number__contains'] = query
+        # kwargs['project__project_name__contains'] = query
+        # kwargs['contract_number__contains'] = query
     print(time.time())
     purchases = Purchase.objects.all().filter(flag=True)
+    print(purchases.filter(**kwargs))
     page_number = request.GET.get('page') if request.GET.get('page') is not None else 1
     paginator = Paginator(purchases, 10)
     page_data = get_pageData(paginator=paginator, pageNumber=page_number)

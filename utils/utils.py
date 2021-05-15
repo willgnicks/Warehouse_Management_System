@@ -28,7 +28,13 @@ def get_all(request, klass, **kwargs):
     template_url = f'{class_name}/{class_name}.html'
     print(time.time())
     # 查询结果集
-    queryset = klass.objects.all().filter(flag=True)
+    query_dic = kwargs.get('kwargs').get('query') if kwargs else {}
+    print(query_dic)
+    q = Q()
+    if query_dic is not None:
+        for query in query_dic:
+            q.add(Q(**{query: query_dic[query]}), Q.OR)
+    queryset = klass.objects.all().filter(flag=True).filter(q)
     # 生成分页器
     paginator = Paginator(queryset, 10)
     # 生成页面数
@@ -37,9 +43,9 @@ def get_all(request, klass, **kwargs):
     page_data = get_pageData(paginator, pageNumber=page_number)
     # 获取关系
     print(kwargs)
-    rel = list(kwargs.get('kwargs'))[0] if kwargs else None
-    print(rel)
-    rel_val = kwargs.get('kwargs').get(rel) if rel is not None else None
+    # rel = list(kwargs.get('kwargs'))[0] if kwargs else None
+    rel_val = kwargs.get('kwargs').get('rel') if kwargs else None
+    print(rel_val)
     rel_set = []
     # 如果有关系参数，那么返回该关系参数的结果集
     if rel_val is not None:
@@ -47,6 +53,7 @@ def get_all(request, klass, **kwargs):
             rel_set.insert(index, queryset[index].__getattribute__(rel_val))
     for r in rel_set:
         print(r)
+
     print(class_name, '&', template_url)
     print(time.time())
     return render(request,
@@ -54,7 +61,7 @@ def get_all(request, klass, **kwargs):
                   {
                       'count': paginator.count,
                       class_name: page_data,
-                      rel: rel_set
+                      rel_val: rel_set
                   }
                   )
 
