@@ -1,6 +1,6 @@
 from django.forms import ModelForm
 from project_manage.models import Project
-from utils.utils import get_all, add_or_update, delete_one
+from utils.utils import get_all, add_or_update, delete_one, get_one
 from django.shortcuts import redirect, reverse, render
 
 
@@ -19,28 +19,17 @@ class ProjectForm(ModelForm):
 
 
 def get_one_project(request, pk):
-    from utils.utils import get_one
-    return get_one(request, Project, kwargs={'pk': pk, 'title': '修改项目详情'})
+    return get_one(request, Project, kwargs={'pk': pk})
 
 
 # 添加项目信息
 def add_project(request):
-    """
-
-    @param request:
-    @return:
-    """
     return add_or_update(request, Project, ProjectForm,
-                         kwargs={'reverse_url': 'project_related:all_project_details', 'title': '新增项目'})
+                         kwargs={'reverse_url': 'project_related:all_project_details'})
 
 
 # 按照默认分页返回详情
 def get_all_projects(request):
-    """
-
-    @param request:
-    @return:
-    """
     return get_all(request=request, klass=Project)
 
 

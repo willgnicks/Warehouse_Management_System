@@ -6,10 +6,10 @@
     <div class="title_right" style="height: 51px">
 
         <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search" style="margin-top: 6px">
-            <form class="input-group" action="{% url 'project_related:get_query_project' %}" method="get">
+            <form class="input-group" action="{% url 'project_related:get_query_projects' %}" method="get">
                 <input type="text" class="form-control" name="query" placeholder="项目编号或项目名称">
                 <span class="input-group-btn">
-                          <button class="btn btn-secondary" type="submit">搜索!</button>
+                          <button class="btn btn-secondary" type="submit">搜索</button>
                 </span>
             </form>
         </div>
@@ -29,8 +29,8 @@
         <thead>
         <tr>
             <th>序号</th>
-            <th>项目编号</th>
             <th>项目名称</th>
+            <th>项目编号</th>
             <th>编辑</th>
         </tr>
         </thead>
@@ -38,8 +38,8 @@
         {% for project in projects %}
                 <tr>
                     <td>{{ forloop.counter }}</td>
-                    <td>{{ project.project_code }}</td>
                     <td>{{ project.project_name }}</td>
+                    <td>{{ project.project_code }}</td>
                     <td><a href="{% url 'project_related:get_one_project' pk=project.id %}" class="fa fa-edit"></a>&nbsp;&nbsp;
                         <a href="{% url 'project_related:delete_project' pk=project.id %}" class="fa fa-trash"></a>
                     </td>

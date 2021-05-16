@@ -38,7 +38,7 @@ def get_bulk(purchase_id, product, quantity, rel_set=None):
         for index in range(len(product)):
             rel_set[index].product_id = product[index]
             rel_set[index].quantity = quantity[index]
-            return rel_set
+        return rel_set
     else:
         pp_rel_bulk = []
         for index in range(len(product)):
@@ -110,7 +110,6 @@ def add_or_update(request, klass, form_class, **kwargs):
     :param form_class: 传入添加的modelform类名
     :param kwargs: {quote_class:[quote_class_list], title: title_val, reverse_url: url_val}
                    quote_class: 需要额外查询的类名列表
-                   title: 页面显示的title
                    reverse_url: redirect的url，app_name:name
     :return:
     """
@@ -119,18 +118,23 @@ def add_or_update(request, klass, form_class, **kwargs):
     model_name = get_model_name_from_modelform(form_class)
     # put方法的html路径
     template_url = f'{model_name}/add.html'
+    print(template_url)
     # 获取引用类列表, 无值只传title
     quote_class_list = kwargs.get('kwargs').get('quote_class')
-    quote_dic = {'title': kwargs.get('kwargs').get('title')}
+    quote_dic = {}
     # 根据列表循环将引用类类名和该类的queryset形成键值对
     if quote_class_list is not None:
-        for klass in quote_class_list:
-            quote_dic[get_model_name(klass)] = klass.objects.all()
+        for k in quote_class_list:
+            quote_dic[get_model_name(k)] = k.objects.all()
+    # print(quote_dic)
     if request.method == 'GET':
         # 第一次get请求页面， 此时为新增的页面
+        print(request.method)
+        print(quote_dic)
         print(time.time())
         return render(request, template_url, quote_dic)
     else:
+        print(request.method)
         # 第一次post请求，根据id的值来判断是新增还是更新
         # 如果有id，那么就是update
         # 如果没有id，那么就是save
@@ -138,9 +142,11 @@ def add_or_update(request, klass, form_class, **kwargs):
         return_dic = {model_name: modelform_instance}
         # 如果id有那么下次还是将id的实例回显
         this_id = request.POST.get('id')
+        print(this_id)
         if this_id:
             obj = klass.objects.filter(id=this_id).first()
             return_dic[model_name[:-1]] = obj
+            print(obj)
             modelform_instance = form_class(request.POST, instance=obj)
         # 表单验证通过
         if modelform_instance.is_valid():
@@ -154,7 +160,7 @@ def add_or_update(request, klass, form_class, **kwargs):
         else:
             for key in quote_dic:
                 return_dic[key] = quote_dic.get(key)
-            return_dic['title'] = kwargs.get('kwargs').get('title')
+            print(return_dic)
             print(time.time())
             return render(request, template_url, return_dic)
 
@@ -185,10 +191,9 @@ def get_one(request, klass, **kwargs):
     # pk
     pk = kwargs.get('kwargs').get('pk')
     obj = klass.objects.filter(id=pk).first()
-    print(obj)
     # quote classes data
     quote_class_list = kwargs.get('kwargs').get('quote_class')
-    return_dic = {class_name[:-1]: obj, 'title': kwargs.get('kwargs').get('title')}
+    return_dic = {class_name[:-1]: obj}
     if quote_class_list is not None:
         for klass in quote_class_list:
             return_dic[get_model_name(klass)] = klass.objects.all()

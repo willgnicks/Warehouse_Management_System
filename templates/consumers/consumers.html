@@ -5,19 +5,19 @@
     </div>
     <div class="title_right" style="height: 51px">
         <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search" style="margin-top: 6px">
-            <div class="input-group">
-                <input type="text" class="form-control" placeholder="搜索...">
+            <form class="input-group" action="{% url 'consumer_related:get_query_consumers' %}">
+                <input type="text" class="form-control" placeholder="用户名或手机号码" name="query">
                 <span class="input-group-btn">
-                          <button class="btn btn-secondary" type="button">Go!</button>
+                          <button class="btn btn-secondary" type="button">搜索</button>
                 </span>
-            </div>
+            </form>
         </div>
     </div>
 {% endblock %}
 {% block content_title %}
     <h2>
         <small>
-            <a class="fa fa-plus btn btn-outline-success" href="{% url 'user_related:add_user' %}">&nbsp;&nbsp;新增用户</a>
+            <a class="fa fa-plus btn btn-outline-success" href="{% url 'consumer_related:add_consumer' %}">&nbsp;&nbsp;新增用户</a>
         </small>
     </h2>
 {% endblock %}
@@ -39,22 +39,22 @@
         </tr>
         </thead>
         <tbody>
-        {% for user in users %}
-            {% if user.flag is not False %}
+        {% for consumer in consumers %}
+            {% if consumer.flag is not False %}
                 <tr>
                     <td>{{ forloop.counter }}</td>
-                    <td>{{ user.name }}</td>
-                    <td>{{ user.gender }}</td>
-                    <td>{{ user.phone }}</td>
-                    <td>{{ user.mail }}</td>
-                    <td>{{ user.type }}</td>
-                    <td>{{ user.status }}</td>
-                    <td>{{ user.last_login_date | date:'Y-m-d H:i:s' }}</td>
-                    {% if user.type == '超级管理员' %}
+                    <td>{{ consumer.name }}</td>
+                    <td>{{ consumer.gender }}</td>
+                    <td>{{ consumer.phone }}</td>
+                    <td>{{ consumer.mail }}</td>
+                    <td>{{ consumer.type }}</td>
+                    <td>{{ consumer.status }}</td>
+                    <td>{{ consumer.last_login_date | date:'Y-m-d H:i:s' }}</td>
+                    {% if consumer.type == '超级管理员' %}
                         <td></td>
                     {% else %}
-                        <td><a href="" class="fa fa-edit"></a>&nbsp;&nbsp;
-                            <a href="{% url 'user_related:delete_user' user.id %}" class="fa fa-trash"></a>
+                        <td><a href="{% url 'consumer_related:get_one_consumer' pk=consumer.id %}" class="fa fa-edit"></a>&nbsp;&nbsp;
+                            <a href="{% url 'consumer_related:delete_consumer' pk=consumer.id %}" class="fa fa-trash"></a>
                         </td>
                     {% endif %}
                 </tr>
@@ -71,32 +71,32 @@
 {% block footer %}
     <div class="col-sm-5">
         <div class="dataTables_info">
-            {{ users.start_index }} - {{ users.end_index }}
+            {{ consumers.start_index }} - {{ consumers.end_index }}
             of {{ count }}
         </div>
     </div>
     <div class="col-sm-7">
         <div class="dataTables_paginate">
             <ul class="pagination">
-                {% if users.has_previous %}
+                {% if consumers.has_previous %}
                     <li class="paginate_button previous"><a
                             href="?page=1">
                         第一页</a></li>
                     <li class="paginate_button previous disabled">
-                        <a href="?page={{ users.previous_page_number }}">上一页</a>
+                        <a href="?page={{ consumers.previous_page_number }}">上一页</a>
                     </li>
                 {% endif %}
                 <li class="paginate_button active"><a
-                        aria-controls="dataTable">第 {{ users.number }}
+                        aria-controls="dataTable">第 {{ consumers.number }}
                     页 /
-                    共 {{ users.paginator.num_pages }} 页</a>
+                    共 {{ consumers.paginator.num_pages }} 页</a>
                 </li>
-                {% if users.has_next %}
+                {% if consumers.has_next %}
                     <li class="paginate_button"><a
-                            href="?page={{ users.next_page_number }}">下一页</a>
+                            href="?page={{ consumers.next_page_number }}">下一页</a>
                     </li>
                     <li class="paginate_button"><a
-                            href="?page={{ users.paginator.num_pages }}">最后一页
+                            href="?page={{ consumers.paginator.num_pages }}">最后一页
                     </a></li>
                 {% endif %}
             </ul>

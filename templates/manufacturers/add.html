@@ -6,7 +6,7 @@
     </div>
 {% endblock %}
 {% block content_title %}
-    <h2>新增供应商&nbsp;
+    <h2>{% if manufacturer is not None %}修改供应商详情{% else %}新增供应商{% endif %}&nbsp;
         <small>
             <a class="fa fa-angle-double-right"></a>
             &nbsp;&nbsp;
@@ -24,7 +24,7 @@
                         class="required">*</span></label>
                 <div class="col-md-6 col-sm-6">
                     <input class="form-control" name="manufacturer_name" placeholder="上海震旦"
-                           value="{{ manufacturers.manufacturer_name.value }}"
+                           value="{% if manufacturer is not None %}{{ manufacturer.manufacturer_name }}{% else %}{{ manufacturers.manufacturer_name.value }}{% endif %}"
                            required="required"/>
                     <span style="color: red; font-weight: bold">{{ manufacturers.manufacturer_name.errors.0 }}</span>
                 </div>
@@ -34,7 +34,7 @@
                         class="required">*</span></label>
                 <div class="col-md-6 col-sm-6">
                     <input class="form-control" name="manufacturer_linkman" placeholder="孙老师"
-                           value="{{ manufacturers.manufacturer_linkman.value }}"/>
+                           value="{% if manufacturer is not None %}{{ manufacturer.manufacturer_linkman }}{% else %}{{ manufacturers.manufacturer_linkman.value }}{% endif %}"/>
                     <span style="color: red; font-weight: bold">{{ manufacturers.manufacturer_linkman.errors.0 }}</span>
                 </div>
             </div>
@@ -43,7 +43,8 @@
                         class="required">*</span></label>
                 <div class="col-md-6 col-sm-6">
                     <input class="form-control" name="manufacturer_contact" data-validate-linked='phone'
-                           value="{{ manufacturers.manufacturer_contact.value }}" placeholder="固定座机或手机号码" required/>
+                           value="{% if manufacturer is not None %}{{ manufacturer.manufacturer_contact }}{% else %}{{ manufacturers.manufacturer_contact.value }}{% endif %}"
+                           placeholder="固定座机或手机号码" required/>
                     <span style="color: red; font-weight: bold">{{ manufacturers.manufacturer_contact.errors.0 }}</span>
                 </div>
             </div>
@@ -52,7 +53,9 @@
                         class="required">*</span></label>
                 <div class="col-md-6 col-sm-6">
                     <input class="form-control" type="text" name="cooperation_begin_date"
-                           value="{{ manufacturers.cooperation_begin_date.value }}" placeholder="2020-10-30" required/>
+                           value="{% if manufacturer is not None %}{{ manufacturer.cooperation_begin_date | date:'Y-d-m' }}{% else %}{{ manufacturers.cooperation_begin_date.value | date:'Y-d-m' }}{% endif %}"
+                           placeholder="2020-10-30" required/>
+                    <input type="text" value="{{ manufacturer.id }}" style="display: none" name="id">
                     <span style="color: red; font-weight: bold">{{ manufacturers.cooperation_begin_date.errors.0 }}</span>
                 </div>
             </div>
@@ -79,7 +82,7 @@
                     <br/>
                     <div class="col-md-6 offset-md-3">
                         <button type='submit' class="btn btn-danger">提 交</button>
-                        <button type='reset' class="btn btn-warning">重 置</button>
+                        {% if manufacturer is None %}<button type='reset' class="btn btn-warning">重 置</button>{% endif %}
                     </div>
                 </div>
             </div>

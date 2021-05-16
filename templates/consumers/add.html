@@ -1,13 +1,12 @@
 {% extends 'layout/base.html' %}
 
-
 {% block page_title %}
     <div class="title_left">
         <h3>用户管理</h3>
     </div>
 {% endblock %}
 {% block content_title %}
-    <h2>新增用户&nbsp;
+    <h2>{% if consumer is not None %}修改用户详情{% else %}新增用户{% endif %}&nbsp;
         <small>
             <a class="fa fa-angle-double-right"></a>
             &nbsp;&nbsp;
@@ -18,15 +17,15 @@
 {% endblock %}
 {% block content %}
     <div class="x_content">
-        <form action="{% url 'user_related:add_user' %}" method="post" novalidate>
+        <form action="{% url 'consumer_related:add_consumer' %}" method="post" novalidate>
             {% csrf_token %}
             <div class="item form-group">
                 <label class="col-form-label col-md-3 col-sm-3  label-align">姓 名<span
                         class="required">*</span></label>
                 <div class="col-md-6 col-sm-6">
-                    <input class="form-control" name="name" placeholder="张三" value="{{ users.name.value }}"
+                    <input class="form-control" name="name" placeholder="张三" value="{% if consumer is not None %}{{ consumer.name }}{% else %}{{ consumers.name.value }}{% endif %}"
                            required="required"/>
-                    <span style="color: red; font-weight: bold">{{ users.name.errors.0 }}</span>
+                    <span style="color: red; font-weight: bold">{{ consumers.name.errors.0 }}</span>
                 </div>
             </div>
             <div class="item form-group">
@@ -40,7 +39,7 @@
                         <label class="btn btn-outline-primary">
                             <input type="radio" name="gender" value="女性" class="join-btn"> 女性
                         </label>
-                        <span style="color: red; font-weight: bold">{{ users.gender.errors.0 }}</span>
+                        <span style="color: red; font-weight: bold">{{ consumers.gender.errors.0 }}</span>
                     </div>
                 </div>
             </div>
@@ -49,8 +48,8 @@
                         class="required">*</span></label>
                 <div class="col-md-6 col-sm-6">
                     <input class="form-control" name="mail" type="email" placeholder="example@email.com"
-                           value="{{ users.mail.value }}"/>
-                    <span style="color: red; font-weight: bold">{{ users.mail.errors.0 }}</span>
+                           value="{% if consumer is not None %}{{ consumer.mail }}{% else %}{{ consumers.mail.value }}{% endif %}"/>
+                    <span style="color: red; font-weight: bold">{{ consumers.mail.errors.0 }}</span>
                 </div>
             </div>
             <div class="item form-group">
@@ -58,8 +57,9 @@
                         class="required">*</span></label>
                 <div class="col-md-6 col-sm-6">
                     <input class="form-control" name="phone" data-validate-linked='phone'
-                           value="{{ users.phone.value }}" required='required'/>
-                    <span style="color: red; font-weight: bold">{{ users.phone.errors.0 }}</span>
+                           value="{% if consumer is not None %}{{ consumer.phone }}{% else %}{{ consumers.phone.value }}{% endif %}" required='required'/>
+                    <span style="color: red; font-weight: bold">{{ consumers.phone.errors.0 }}</span>
+                    <input type="text" value="{{ consumer.id }}" style="display: none" name="id">
                 </div>
             </div>
             <div class="item form-group">
@@ -67,7 +67,7 @@
                         class="required">*</span></label>
                 <div class="col-md-6 col-sm-6">
                     <input class="form-control" type="password" id="password1" name="password" required/>
-                    <span style="color: red; font-weight: bold">{{ users.password.errors.0 }}</span>
+                    <span style="color: red; font-weight: bold">{{ consumers.password.errors.0 }}</span>
                 </div>
             </div>
             <div class="item form-group">
@@ -89,7 +89,7 @@
                         <label class="btn btn-outline-primary">
                             <input type="radio" name="type" value="管理用户" class="join-btn"> 管理用户
                         </label>
-                        <span style="color: red; font-weight: bold">{{ users.type.errors.0 }}</span>
+                        <span style="color: red; font-weight: bold">{{ consumers.type.errors.0 }}</span>
                     </div>
                 </div>
             </div>
@@ -104,7 +104,7 @@
                         <label class="btn btn-outline-primary">
                             <input type="radio" name="status" value="停用" class="join-btn"> 停用
                         </label>
-                        <span style="color: red; font-weight: bold">{{ users.status.errors.0 }}</span>
+                        <span style="color: red; font-weight: bold">{{ consumers.status.errors.0 }}</span>
                     </div>
                 </div>
             </div>
@@ -117,7 +117,7 @@
                     <br/>
                     <div class="col-md-6 offset-md-3">
                         <button type='submit' class="btn btn-danger">提 交</button>
-                        <button type='reset' class="btn btn-warning">重 置</button>
+                        {% if consumer is None %}<button type='reset' class="btn btn-warning">重 置</button>{% endif %}
                     </div>
                 </div>
             </div>

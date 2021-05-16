@@ -6,7 +6,7 @@
     </div>
 {% endblock %}
 {% block content_title %}
-    <h2>{{ title }}&nbsp;
+    <h2>{% if project is not None %}修改项目详情{% else %}新增项目{% endif %}&nbsp;
         <small>
             <a class="fa fa-angle-double-right"></a>
             &nbsp;&nbsp;
@@ -50,7 +50,7 @@
                     <br/>
                     <div class="col-md-6 offset-md-3">
                         <button type='submit' class="btn btn-danger">提 交</button>
-                        <button type='reset' class="btn btn-warning">重 置</button>
+                        {% if project is None %}<button type='reset' class="btn btn-warning">重 置</button>{% endif %}
                     </div>
                 </div>
             </div>

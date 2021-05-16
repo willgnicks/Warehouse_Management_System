@@ -169,7 +169,7 @@
                     <br/>
                     <div class="col-md-6 offset-md-3">
                         <button id="go_add" type="button" class="btn btn-danger">提 交</button>
-                        <button type='reset' class="btn btn-warning">重 置</button>
+                        {% if purchase is None %}<button type='reset' class="btn btn-warning">重 置</button>{% endif %}
                     </div>
                 </div>
             </div>

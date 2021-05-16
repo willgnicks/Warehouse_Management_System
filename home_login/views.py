@@ -1,5 +1,5 @@
 from django.shortcuts import render, HttpResponseRedirect
-from user_manage.models import User
+from consumer_manage.models import Consumer
 from django.http import HttpResponse
 import json
 from django.forms import Form, fields
@@ -56,7 +56,7 @@ def login(request):
         # 通过验证
         if login_form.is_valid():
             # 获取该用户信息
-            login_user = User.objects.filter(name__exact=login_form.cleaned_data.get('username'))
+            login_user = Consumer.objects.filter(name__exact=login_form.cleaned_data.get('username'))
             user_instance = login_user.first()
             # 该用户存在并且密码通过核对正确
             if login_user.exists() and login_form.cleaned_data.get('password') == user_instance.password:
@@ -70,7 +70,7 @@ def login(request):
                     request.session['username'] = user_instance.name
                     request.session['type'] = user_instance.type
                     # print(request.META)
-                    User.objects.filter(name__exact=user_instance.name).update(last_login_date=datetime.now())
+                    Consumer.objects.filter(name__exact=user_instance.name).update(last_login_date=datetime.now())
                     # 先重定向到中间件生成session
                     return HttpResponseRedirect(reverse('home_and_login:go_add_session_key'))
                 else:

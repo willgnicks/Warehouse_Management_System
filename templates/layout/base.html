@@ -39,15 +39,15 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="{% url 'product_related:all_product_details' %}">
-                                    <i class="fa fa-product-hunt"></i>
-                                    产品管理
-                                </a>
-                            </li>
-                            <li>
                                 <a href="{% url 'manufacturer_related:all_manufacturer_details' %}">
                                     <i class="fa fa-group"></i>
                                     供应商管理
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'product_related:all_product_details' %}">
+                                    <i class="fa fa-product-hunt"></i>
+                                    产品管理
                                 </a>
                             </li>
                             <li>
@@ -82,7 +82,8 @@
                             </li>
                             {% if request.session.type != '普通用户' %}
 
-                                <li><a href="{% url 'user_related:all_users_details' %}"><i class="fa fa-user"></i> 用户管理
+                                <li><a href="{% url 'consumer_related:all_consumers_details' %}"><i
+                                        class="fa fa-user"></i> 用户管理
                                 </a>
                                 </li>
                             {% endif %}
@@ -150,20 +151,20 @@
                             <div class="x_content">
                                 <div class="row">
                                     <div class="col-sm-12">
-{#                                        <div class="card-box table-responsive">#}
-{#                                            <div class="dataTables_wrapper container-fluid">#}
-                                                <div class="row">
-                                                    <div class="col-sm-12">
-                                                        {% block content %}
-                                                        {% endblock %}
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    {% block footer %}
-                                                    {% endblock %}
-                                                </div>
-{#                                            </div>#}
-{#                                        </div>#}
+                                        {#                                        <div class="card-box table-responsive">#}
+                                        {#                                            <div class="dataTables_wrapper container-fluid">#}
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                {% block content %}
+                                                {% endblock %}
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            {% block footer %}
+                                            {% endblock %}
+                                        </div>
+                                        {#                                            </div>#}
+                                        {#                                        </div>#}
                                     </div>
                                 </div>
                             </div>

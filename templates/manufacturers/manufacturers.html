@@ -6,12 +6,12 @@
     </div>
     <div class="title_right" style="height: 51px">
         <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search" style="margin-top: 6px">
-            <div class="input-group">
-                <input type="text" class="form-control" placeholder="搜索...">
+            <form action="{% url 'manufacturer_related:get_query_manufacturers' %}" method="get" class="input-group">
+                <input type="text" class="form-control" name="query" placeholder="供应商名称或联系人">
                 <span class="input-group-btn">
-                          <button class="btn btn-secondary" type="button">Go!</button>
+                          <button class="btn btn-secondary" type="submit">搜索</button>
                 </span>
-            </div>
+            </form>
         </div>
     </div>
 {% endblock %}
@@ -54,7 +54,7 @@
                 {% endif %}
 
                 <td><a href="{% url 'manufacturer_related:get_one_manufacturer' pk=manufacturer.id %}" class="fa fa-edit" name={{ manufacturers.id }}></a>&nbsp;&nbsp;
-                    <a href="" class="fa fa-trash" name="{{ manufacturers.id }}"></a>
+                    <a href="{% url 'manufacturer_related:get_one_manufacturer' pk=manufacturer.id %}" class="fa fa-trash" name="{{ manufacturers.id }}"></a>
                 </td>
             </tr>
         {% endfor %}

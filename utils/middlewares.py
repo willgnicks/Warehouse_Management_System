@@ -2,7 +2,7 @@ from django.shortcuts import redirect
 from django.utils.deprecation import MiddlewareMixin
 from django.urls import reverse
 from home_login.views import __session_key__, __status_code__
-from user_manage.models import User
+from consumer_manage.models import Consumer
 
 
 class LoginMiddleware(MiddlewareMixin):
@@ -14,13 +14,13 @@ class LoginMiddleware(MiddlewareMixin):
     @staticmethod
     def process_request(request):
         white_list = ['/', '/login/', '/middle/', '/logout/']
-        black_list = ['/users/']
+        black_list = ['/consumers/']
         # 如果url在白名单，通过中间件至urls.py
         if request.path in white_list:
             return None
         else:
             print(request.session.get_expiry_date())
-            request_user = User.objects.filter(name=request.session.get('username')).first()
+            request_user = Consumer.objects.filter(name=request.session.get('username')).first()
             print(request_user)
             # 登录session为空，非法登陆返回登陆页面
             if request.session.is_empty():

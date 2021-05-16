@@ -2,9 +2,9 @@ from django.db import models
 
 
 # 用户类
-class User(models.Model):
+class Consumer(models.Model):
     # 用户名
-    name = models.CharField(max_length=10, unique=True)
+    name = models.CharField(max_length=100, unique=True)
     # 用户密码
     password = models.CharField(max_length=100)
     # 用户联系方式

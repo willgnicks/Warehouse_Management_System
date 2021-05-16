@@ -7,7 +7,7 @@ from datetime import datetime
 # 供应商模型
 class Manufacturer(models.Model):
     # 供应商名
-    manufacturer_name = models.CharField(max_length=50)
+    manufacturer_name = models.CharField(max_length=50, unique=True)
     # 联系人
     manufacturer_linkman = models.CharField(max_length=20)
     # 联系方式

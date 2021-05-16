@@ -1,5 +1,5 @@
 from django.db import models
-from user_manage.models import User
+from consumer_manage.models import Consumer
 from manufacturer_manage.models import Manufacturer
 from purchase_manage.models import Purchase
 
@@ -9,7 +9,7 @@ class Product(models.Model):
     # 产品名称
     product_name = models.CharField(max_length=30)
     # 产品型号
-    product_model = models.CharField(max_length=100)
+    product_model = models.CharField(max_length=100, unique=True)
     # 产品类型
     product_type = models.CharField(max_length=100)
     # 产品单价

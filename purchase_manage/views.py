@@ -1,16 +1,14 @@
 import json
 import time
-
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.forms import ModelForm, Form, fields
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, reverse
 
 from purchase_manage.models import Purchase
 from product_manage.models import Product, PurchaseProductRel
 from project_manage.models import Project
-from utils.utils import get_all, add_or_update, get_pageData, get_kwargs, get_bulk
+from utils.utils import get_pageData, get_kwargs, get_bulk
 
 
 # 搜索
@@ -118,10 +116,8 @@ def add_or_update(request):
             # 新增采购产品关系
             pp_rel_bulk = get_bulk(this_purchase_id, product, quantity)
             PurchaseProductRel.objects.bulk_create(pp_rel_bulk)
-
         print('POST请求完毕')
         print('结束时间-->', time.time())
-
         return JsonResponse({'status': 'success'})
 
 
@@ -135,9 +131,12 @@ def increase_or_decrease(this_purchase_id, product, quantity):
     """
     # 先取该purchase的之前关系表
     rel_set = Purchase.objects.filter(id=this_purchase_id).first().purchaseproductrel_set.all()
+    for i in rel_set:
+        print(i.product_id)
     # 先比较product列表长度和queryset的长度，判断增加产品还是减少产品
     difference = len(product) - len(rel_set)
     # 增加产品，那么对product列表切片，将切下来的insert
+    print('增加', difference)
     if difference > 0:
         # 目前提交数据长于之前，新增关系
         need_to_update = get_bulk(this_purchase_id, product[:len(rel_set)], quantity[:len(rel_set)], rel_set)

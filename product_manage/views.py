@@ -16,7 +16,8 @@ class ProductForm(ModelForm):
         exclude = ['flag', 'purchase']
         error_messages = {
             'product_name': {'required': '请输入产品名称'},
-            'product_model': {'required': '请输入产品型号'},
+            'product_model': {'required': '请输入产品型号',
+                              'unique': '该型号已存在'},
             'product_type': {'required': '请填输入产品类型'},
             'unit_price': {'required': '请输入产品单价',
                            'invalid': '请输入正确的价格格式'},
@@ -46,10 +47,11 @@ def get_query_products(request):
 
 
 def add_product(request):
-    return add_or_update(request=request, form_class=ProductForm,
-                         kwargs={'quote_class': [Manufacturer], 'title': '新增产品',
-                           'reverse_url': 'product_related:all_product_details'})
+    return add_or_update(request=request, klass=Product, form_class=ProductForm,
+                         kwargs={'quote_class': [Manufacturer],
+                                 'title': '新增产品',
+                                 'reverse_url': 'product_related:all_product_details'})
 
 
-def delete_product(request, pk=1):
+def delete_product(request, pk):
     return delete_one(pk=pk, klass=Product, kwargs={'reverse_url': 'product_related:all_product_details'})

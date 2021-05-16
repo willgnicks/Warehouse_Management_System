@@ -13,6 +13,7 @@ from pathlib import Path
 import os
 
 # Build paths inside the projects like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
@@ -42,12 +43,12 @@ INSTALLED_APPS = [
     'product_manage.apps.ProductManageConfig',
     'project_manage.apps.ProjectManageConfig',
     'purchase_manage.apps.PurchaseManageConfig',
-    'user_manage.apps.UserManageConfig',
+    'consumer_manage.apps.UserManageConfig',
 
 ]
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
-SESSION_COOKIE_AGE = 60*60*10
+SESSION_COOKIE_AGE = 60 * 60 * 10
 SESSION_COOKIE_HTTPONLY = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
@@ -90,6 +91,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Warehouse_Management_System.wsgi.application'
 
+# AUTH_USER_MODEL = consumer_manage.models.User
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
