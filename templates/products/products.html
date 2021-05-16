@@ -59,7 +59,8 @@
                             {% endif %}
                         {% endwith %}
                     {% endfor %}
-                    <td><a href="" class="fa fa-edit" name={{ product.id }}></a>&nbsp;&nbsp;
+                    <td><a href="{% url 'product_related:get_one_product' pk=product.id %}" class="fa fa-edit"
+                           name={{ product.id }}></a>&nbsp;&nbsp;
                         <a href="{% url 'product_related:delete_product' pk=product.id %}" class="fa fa-trash"
                            name="{{ product.id }}"></a>
                     </td>

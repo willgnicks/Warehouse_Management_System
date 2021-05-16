@@ -3,7 +3,7 @@ from home_login.views import is_user_login
 from manufacturer_manage.models import Manufacturer
 from django.forms import ModelForm
 from lending_manage.models import Lending
-from utils.utils import get_all, put_one
+from utils.utils import get_all, add_or_update
 
 
 class LendingForm(ModelForm):
@@ -26,9 +26,9 @@ def get_all_lendings(request):
 
 
 def add_lending(request):
-    return put_one(request=request,
-                   form_class=LendingForm,
-                   kwargs={'reverse_url': 'lending_related:all_lending_details'})
+    return add_or_update(request=request,
+                         form_class=LendingForm,
+                         kwargs={'reverse_url': 'lending_related:all_lending_details'})
     # else:
     #     if ManufacturerForm(request.POST).is_valid():
     #         ManufacturerForm(request.POST).save()

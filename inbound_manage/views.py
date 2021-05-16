@@ -3,7 +3,7 @@ from home_login.views import is_user_login
 from inbound_manage.models import Inbound
 from django.forms import ModelForm
 from purchase_manage.models import Purchase
-from utils.utils import get_all, put_one
+from utils.utils import get_all, add_or_update
 
 
 class InboundForm(ModelForm):
@@ -32,8 +32,8 @@ def get_all_inbounds(request):
 
 
 def add_inbound(request):
-    return put_one(request=request, form_class=InboundForm,
-                   kwargs={'quote_class': [Purchase], 'reverse_url': 'inbound_related:all_inbounds_details'})
+    return add_or_update(request=request, form_class=InboundForm,
+                         kwargs={'quote_class': [Purchase], 'reverse_url': 'inbound_related:all_inbounds_details'})
     # else:
     #     if ManufacturerForm(request.POST).is_valid():
     #         ManufacturerForm(request.POST).save()

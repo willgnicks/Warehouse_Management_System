@@ -19,7 +19,7 @@
     <h2>
         <small>
             <a class="fa fa-plus btn btn-outline-success"
-               href="{% url 'manufacturer-related:add_manufacturer' %}">&nbsp;&nbsp;新增供应商</a>
+               href="{% url 'manufacturer_related:add_manufacturer' %}">&nbsp;&nbsp;新增供应商</a>
 
         </small>
     </h2>
@@ -53,7 +53,7 @@
                     <td>未合作</td>
                 {% endif %}
 
-                <td><a href="" class="fa fa-edit" name={{ manufacturers.id }}></a>&nbsp;&nbsp;
+                <td><a href="{% url 'manufacturer_related:get_one_manufacturer' pk=manufacturer.id %}" class="fa fa-edit" name={{ manufacturers.id }}></a>&nbsp;&nbsp;
                     <a href="" class="fa fa-trash" name="{{ manufacturers.id }}"></a>
                 </td>
             </tr>

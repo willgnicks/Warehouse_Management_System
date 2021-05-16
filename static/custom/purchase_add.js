@@ -26,7 +26,7 @@ purchase_id = 0
 
 // onchange:valid_form(fields, exclude)
 
-function excludes_fields(){
+function excludes_fields() {
     // 排除选项数组中有内容
     if (exclude.length > 0) {
         // 遍历排除选项，如域中有排除选项中的元素，将其删除
@@ -38,6 +38,7 @@ function excludes_fields(){
         }
     }
 }
+
 /**
  * 对于清除了排除选项的域进行验证，将验证每个域中字段的空值与否，格式是否正确
  * @param fields 传入域
@@ -126,6 +127,7 @@ function load_by_page() {
 
     }
 }
+
 // function is_this_occupied(keyword,value){
 //     let path = '/purchases/'+keyword+'/'
 //     $.ajax({
@@ -241,7 +243,7 @@ $(function ($) {
                 quantity.splice(quantity.indexOf(q), 1)
                 let this_index = $("select[name='product']:last").index("select[name='product']")
                 remove_or_append(this_index, val, 1)
-                selected.splice(this_index,1)
+                selected.splice(this_index, 1)
 
             }
             // 如果删除该行时，该行没有选值，直接删除改行
@@ -253,6 +255,10 @@ $(function ($) {
     });
 
     $("#go_add").click(function () {
+        console.log(purchase_id)
+        if (purchase_id != 0) {
+            cleaned_data['id'] = purchase_id
+        }
         if (valid_form()) {
             console.log(cleaned_data)
             let project_val = $("select[name='project']").val()
@@ -264,7 +270,7 @@ $(function ($) {
             let val = $("[name='csrfmiddlewaretoken']").val()
 
             $.ajax({
-                url: '/purchases/purchase/',
+                url: '/purchases/POST/',
                 type: 'POST',
                 dataType: 'json',
                 data: {'package_data': JSON.stringify(cleaned_data), 'csrfmiddlewaretoken': val},
@@ -278,6 +284,27 @@ $(function ($) {
 
 
     });
+
+    $("input[name='form_number'], input[name='contract_number']").blur(function () {
+        let query = $(this).attr('name')
+        let val = $(this).val()
+        $.ajax({
+                url: "/purchases/GET/" + query + "/",
+                type: 'get',
+                dataType: 'json',
+                data: {'val': val},
+                success: function (data) {
+                    if (data['status'] == 'unavailable') {
+                        $("input[name='"+data['component']+"']").next('span').text('该编号已被使用')
+                    }else{
+                        $("input[name='"+data['component']+"']").next('span').text('')
+                    }
+
+
+                }
+
+            })
+    })
 
 
 });

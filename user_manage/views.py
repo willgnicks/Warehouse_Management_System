@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, reverse
 from django.forms import ModelForm
 from user_manage.models import User
-from utils.utils import get_all, put_one
+from utils.utils import get_all, add_or_update
 
 
 # Create your views here.
@@ -30,7 +30,7 @@ def get_all_users(request):
 
 # @login_required(login_url='/login/')
 def add_user(request):
-    return put_one(request=request, form_class=UserForm, kwargs={'reverse_url': 'user_related:all_users_details'})
+    return add_or_update(request=request, form_class=UserForm, kwargs={'reverse_url': 'user_related:all_users_details'})
 
 
 def delete_user(request, pk=1):

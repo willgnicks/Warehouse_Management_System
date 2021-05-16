@@ -4,7 +4,7 @@ from user_manage import views
 # 用户管理路由
 app_name = 'user_related'
 urlpatterns = [
-    path('GET/', views.get_all_users, name='all_users_details'),
+    path('', views.get_all_users, name='all_users_details'),
     path('<int:pk>/', views.get_all_users, name='specify_user_details', ),
     path('DELETE/<int:pk>', views.delete_user, name='delete_user'),
     path('POST/', views.add_user, name='add_user'),

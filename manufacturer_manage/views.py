@@ -1,6 +1,8 @@
+from django.shortcuts import render
+
 from manufacturer_manage.models import Manufacturer
 from django.forms import ModelForm
-from utils.utils import get_all, put_one
+from utils.utils import get_all, add_or_update
 
 
 class ManufacturerForm(ModelForm):
@@ -19,9 +21,17 @@ class ManufacturerForm(ModelForm):
 
 # Create your views here.
 def get_all_manufacturers(request):
+    print('in this url')
     return get_all(request=request, klass=Manufacturer)
 
 
 def add_manufacturer(request):
-    return put_one(request=request, form_class=ManufacturerForm,
-                   kwargs={'reverse_url': 'manufacturer_related:all_manufacturer_details'})
+    return add_or_update(request=request, form_class=ManufacturerForm,
+                         kwargs={'reverse_url': 'manufacturer_related:all_manufacturer_details'})
+
+
+def get_one(request, pk):
+    project = Manufacturer.objects.filter(id=pk).first()
+    return render(request, 'manufacturers/add.html',
+                  {'projects': project,
+                   'title': '修改订单'})

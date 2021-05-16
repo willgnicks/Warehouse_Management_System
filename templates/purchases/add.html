@@ -6,7 +6,7 @@
 
 {% endblock %}
 {% block content_title %}
-    <h2>新增采购&nbsp;
+    <h2>{{ title }}&nbsp;
         <small>
             <a class="fa fa-angle-double-right"></a>
             &nbsp;&nbsp;采购产品选项增减
@@ -179,29 +179,3 @@
 {% block javascript %}
     <script src="/static/custom/purchase_add.js"></script>
 {% endblock %}
-{#            <div class="field item form-group">#}
-{#                <label class="col-form-label col-md-3 col-sm-3 label-align">采购产品<span#}
-{#                        class="required">*</span></label>#}
-{#                <div class="col-md-4 col-sm-4">#}
-{#                    <select class="form-control" name="product">#}
-{#                        <option>请选择</option>#}
-{#                        {% for product in products %}#}
-{#                            <option value="{{ product.id }}">{{ product.product_name }} {{ product.unit_price }}元</option>#}
-{#                        {% endfor %}#}
-{#                    </select>#}
-{#                    <span style="color: red; font-weight: bold">{{ purprorel.product.errors.0 }}</span>#}
-{#                </div>#}
-{#                <label class="col-form-label" style="text-align: center">数量<span#}
-{#                        class="required">*</span></label>#}
-{#                <div style="width: 80px;margin-left: 10px">#}
-{#                    <input class="form-control" name="quantity"#}
-{#                           value="{{ purprorel.quantity.value }}"#}
-{#                           required/>#}
-{#                    <span style="color: red; font-weight: bold">{{ purprorel.quantity.errors.0 }}</span>#}
-{#                </div>#}
-{#                <div style="width: 39px;margin-left: 12px; height: 39px">#}
-{#                    <h2 style="margin-top: 3px">#}
-{#                        <span id='plus' class="fa fa-plus btn btn-outline-primary"></span>#}
-{#                    </h2>#}
-{#                </div>#}
-{#            </div>#}

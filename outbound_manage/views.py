@@ -1,6 +1,6 @@
 from django.forms import ModelForm
 from outbound_manage.models import Outbound
-from utils.utils import get_all, put_one
+from utils.utils import get_all, add_or_update
 from inbound_manage.models import Inbound
 from project_manage.models import Project
 
@@ -25,9 +25,9 @@ def get_all_outbounds(request):
 
 
 def add_outbound(request):
-    return put_one(request=request,
-                   form_class=OutboundForm,
-                   kwargs={'quote_class': [Inbound, Project], 'reverse_url': 'outbound_related:all_outbound_details'})
+    return add_or_update(request=request,
+                         form_class=OutboundForm,
+                         kwargs={'quote_class': [Inbound, Project], 'reverse_url': 'outbound_related:all_outbound_details'})
     # else:
     #     if ManufacturerForm(request.POST).is_valid():
     #         ManufacturerForm(request.POST).save()

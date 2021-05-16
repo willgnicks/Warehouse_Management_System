@@ -3,6 +3,6 @@ from lending_manage import views
 
 app_name = 'lending_related'
 urlpatterns = [
-    path('new/', views.add_lending, name='add_lending'),
+    path('POST/', views.add_lending, name='add_lending'),
     path('', views.get_all_lendings, name='all_lending_details'),
 ]

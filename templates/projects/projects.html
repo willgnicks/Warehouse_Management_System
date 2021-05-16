@@ -36,16 +36,14 @@
         </thead>
         <tbody>
         {% for project in projects %}
-            {% if project.flag == True %}
                 <tr>
                     <td>{{ forloop.counter }}</td>
                     <td>{{ project.project_code }}</td>
                     <td>{{ project.project_name }}</td>
-                    <td><a href="" class="fa fa-edit"></a>&nbsp;&nbsp;
+                    <td><a href="{% url 'project_related:get_one_project' pk=project.id %}" class="fa fa-edit"></a>&nbsp;&nbsp;
                         <a href="{% url 'project_related:delete_project' pk=project.id %}" class="fa fa-trash"></a>
                     </td>
                 </tr>
-            {% endif %}
         {% endfor %}
 
 

@@ -6,7 +6,7 @@
     </div>
 {% endblock %}
 {% block content_title %}
-    <h2>新增项目&nbsp;
+    <h2>{{ title }}&nbsp;
         <small>
             <a class="fa fa-angle-double-right"></a>
             &nbsp;&nbsp;
@@ -24,7 +24,7 @@
                         class="required">*</span></label>
                 <div class="col-md-6 col-sm-6">
                     <input class="form-control" name="project_name" type="text" placeholder="请键入项目名称"
-                           value="{{ projects.project_name.value }}"
+                           value="{% if project is not None %}{{ project.project_name }}{% else %}{{ projects.project_name.value }}{% endif %}"
                            required="required"/>
                     <span style="color: red; font-weight: bold">{{ projects.project_name.errors.0 }}</span>
                 </div>
@@ -34,10 +34,13 @@
                         class="required">*</span></label>
                 <div class="col-md-6 col-sm-6">
                     <input class="form-control" name="project_code" type="text" placeholder="请键入项目编号"
-                           value="{{ projects.project_code.value }}"/>
+                           value="{% if project is not None %}{{ project.project_code }}{% else %}{{ projects.project_code.value }}{% endif %}"
+                           required="required"/>
+                    <input type="text" value="{{ project.id }}" style="display: none" name="id">
                     <span style="color: red; font-weight: bold">{{ projects.project_code.errors.0 }}</span>
                 </div>
             </div>
+
 
             <div class="clearfix"></div>
             <div class="col-md-6 offset-md-3"></div>
