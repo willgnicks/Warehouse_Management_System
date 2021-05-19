@@ -32,11 +32,5 @@ def get_all_inbounds(request):
 
 
 def add_inbound(request):
-    return add_or_update(request=request, form_class=InboundForm,
+    return add_or_update(request=request, klass=Inbound, form_class=InboundForm,
                          kwargs={'quote_class': [Purchase], 'reverse_url': 'inbound_related:all_inbounds_details'})
-    # else:
-    #     if ManufacturerForm(request.POST).is_valid():
-    #         ManufacturerForm(request.POST).save()
-    #         return HttpResponseRedirect(reverse('man:all_product_details'))
-    #     else:
-    #         return render(request, 'products/add.html', {'products': ManufacturerForm(request.POST)})

@@ -8,7 +8,7 @@ from django.shortcuts import render, reverse
 from purchase_manage.models import Purchase
 from product_manage.models import Product, PurchaseProductRel
 from project_manage.models import Project
-from utils.utils import get_pageData, get_kwargs, get_bulk
+from utils.utils import get_kwargs, get_bulk
 
 
 # 搜索
@@ -60,26 +60,59 @@ def get_all_purchases(request, **kwargs):
     @param request:
     @return:
     """
-    # 查询条件
+    page_number = request.GET.get('page') if request.GET.get('page') is not None else 1
     query_dic = kwargs.get('kwargs').get('query') if kwargs else {}
+    #  查询条件
     q = Q()
     if query_dic:
         for query in query_dic:
             q.add(Q(**{query: query_dic[query]}), Q.OR)
-    print(time.time())
     # 查询结果集
     purchases = Purchase.objects.all().filter(flag=True).filter(q)
-    page_number = request.GET.get('page') if request.GET.get('page') is not None else 1
     # 分页
     paginator = Paginator(purchases, 10)
-    page_data = get_pageData(paginator=paginator, pageNumber=page_number)
-    # 取多对多关系
-    rel_set = []
-    for index in range(len(purchases)):
-        rel_set.insert(index, purchases[index].purchaseproductrel_set.all())
-    print(time.time())
+    page_data = paginator.page(number=page_number)
+    data = reform_data(DATA=page_data)
     return render(request, 'purchases/purchases.html',
-                  {'purchases': page_data, 'rel_set': rel_set, 'count': paginator.count})
+                  {'data': data, 'purchases': page_data, 'count': paginator.count})
+
+
+def reform_data(DATA):
+    """
+    datatype  [{purchase:purchase_obj, rel:[{quantity:val,name:val, model:val,price:val},
+                                            {quantity:val,name:val, model:val,price:val},
+                                            ]
+              }]
+    @param DATA:
+    @return:
+    """
+    return_list = []
+    for purchase in DATA:
+        relation = purchase.purchaseproductrel_set.all()
+        result = {'purchase': purchase}
+        rel_list = []
+        for r in relation:
+            temp = {'product_name': r.product.product_name, 'product_model': r.product.product_model,
+                    'unit_price': r.product.unit_price, 'quantity': r.quantity}
+            rel_list.append(temp)
+        result.update({'rel': rel_list})
+        return_list.append(result)
+    return return_list
+
+
+def reform_data_2(DATA):
+    return_list = []
+    for purchase in DATA:
+        # temp = {}
+        result = {'purchase': purchase}
+        relation = purchase.purchaseproductrel_set.all()
+        result['product_name'] = [r.product.product_name for r in relation]
+        result['unit_price'] = [r.product.unit_price for r in relation]
+        result['product_model'] = [r.product.product_model for r in relation]
+        result['quantity'] = [r.quantity for r in relation]
+        # result.update({'rel': temp})
+        return_list.append(result)
+    return return_list
 
 
 # 添加或更新
@@ -105,6 +138,7 @@ def add_or_update(request):
         if package_data.get('id') is not None:
             # 先更新purchase表
             this_purchase_id = package_data.get('id')
+            print(kwargs)
             Purchase.objects.filter(id=this_purchase_id).update(**kwargs)
             # 对于采购产品关系表更新，包括新增或减少
             increase_or_decrease(this_purchase_id, product, quantity)

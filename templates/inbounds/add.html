@@ -40,9 +40,9 @@
                     <select class="form-control" name="product_belong">
                         <option>请选择</option>
                         {% for purchase in purchases %}
-                            {% for product in purchase.product.all %}
-                                <option value="{{ product.id }}">产品名称：{{ product.product_name }}
-                                    &nbsp;&nbsp;&nbsp;&nbsp;采购数量：{{ purchase.quantity }}</option>
+                            {% for rel in purchase.purchaseproductrel_set.all %}
+                                <option value="{{ rel.product.id }}">产品名称：{{ rel.product.product_name }}
+                                    &nbsp;&nbsp;&nbsp;&nbsp;采购数量：{{ rel.quantity }}</option>
                             {% endfor %}
                         {% endfor %}
                     </select>

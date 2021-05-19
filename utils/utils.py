@@ -19,6 +19,8 @@ def get_kwargs(klass, package_data):
     print('数据填充')
     obj_fields = klass._meta.fields
     kwargs = {}
+    if package_data.get('project_id') is None:
+        kwargs['project_id'] = None
     # 对值不为空的字段填充
     for i in range(len(obj_fields)):
         att_name = obj_fields[i].attname
@@ -89,6 +91,7 @@ def get_all(request, klass, **kwargs):
     # 如果有关系，那么返回该关系的结果集
     if rel_val is not None:
         for index in range(len(queryset)):
+            print(queryset[index].unit_price)
             rel_set.insert(index, queryset[index].__getattribute__(rel_val))
     print(class_name, '&', template_url)
     print(time.time())
