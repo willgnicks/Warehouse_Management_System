@@ -16,17 +16,17 @@ def get_kwargs(klass, package_data):
     @param package_data: 该模型数据
     @return:
     """
-    print('数据填充')
+    print('get_kwargs: 整理m2m中one')
     obj_fields = klass._meta.fields
     kwargs = {}
-    if package_data.get('project_id') is None:
-        kwargs['project_id'] = None
     # 对值不为空的字段填充
     for i in range(len(obj_fields)):
         att_name = obj_fields[i].attname
         att_val = package_data.get(att_name)
         if att_val is not None:
             kwargs[att_name] = att_val
+        # else:
+        #     kwargs[att_name] = None
     return kwargs
 
 
@@ -34,18 +34,24 @@ def get_pageData(paginator, pageNumber):
     return paginator.page(pageNumber)
 
 
-def get_bulk(purchase_id, product, quantity, rel_set=None):
-    print('获取bulk')
-    if rel_set is not None:
-        for index in range(len(product)):
-            rel_set[index].product_id = product[index]
-            rel_set[index].quantity = quantity[index]
-        return rel_set
+def get_bulk(rel_klass, args, original=None):
+    """
+           1.args' length equals length of original queryset
+           2.if original queryset is None means that this is a create action, no need to modify models' data
+    @param rel_klass: m2m middle model
+    @param args: m2m model key-value dict list
+    @param original: queryset
+    @return:
+    """
+    print('get_bulk: 获取bulk')
+    if original:
+        for index in range(len(args)):
+            original[index].__dict__.update(**args[index])
+        return original
     else:
         pp_rel_bulk = []
-        for index in range(len(product)):
-            pp_rel = PurchaseProductRel(purchase_id=purchase_id, product_id=product[index],
-                                        quantity=quantity[index])
+        for kwargs in args:
+            pp_rel = rel_klass(**kwargs)
             pp_rel_bulk.append(pp_rel)
         return pp_rel_bulk
 
@@ -78,7 +84,10 @@ def get_all(request, klass, **kwargs):
         for query in query_dic:
             q.add(Q(**{query: query_dic[query]}), Q.OR)
     # 生成结果集
-    queryset = klass.objects.all().filter(flag=True).filter(q)
+    values_fields = kwargs.get('kwargs').get('value_field') if kwargs.get('kwargs') is not None else None
+    print(values_fields)
+    queryset = klass.objects.all().filter(flag=True).filter(
+        q).values(*values_fields) if values_fields is not None else klass.objects.all().filter(flag=True).filter(q)
     # 生成分页器
     paginator = Paginator(queryset, 10)
     # 获取当前页面值
@@ -127,13 +136,12 @@ def add_or_update(request, klass, form_class, **kwargs):
     quote_dic = {}
     # 根据列表循环将引用类类名和该类的queryset形成键值对
     if quote_class_list is not None:
-        for k in quote_class_list:
-            quote_dic[get_model_name(k)] = k.objects.all()
+        quote_dic = {get_model_name(k): k.objects.all() for k in quote_class_list}
+        # for k in quote_class_list:
+        #     quote_dic[get_model_name(k)] = k.objects.all()
     # print(quote_dic)
     if request.method == 'GET':
         # 第一次get请求页面， 此时为新增的页面
-        print(request.method)
-        print(quote_dic)
         print(time.time())
         return render(request, template_url, quote_dic)
     else:

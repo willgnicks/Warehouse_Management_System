@@ -26,8 +26,10 @@ def get_all_outbounds(request):
 
 def add_outbound(request):
     return add_or_update(request=request,
+                         klass=Outbound,
                          form_class=OutboundForm,
-                         kwargs={'quote_class': [Inbound, Project], 'reverse_url': 'outbound_related:all_outbound_details'})
+                         kwargs={'quote_class': [Inbound, Project],
+                                 'reverse_url': 'outbound_related:all_outbound_details'})
     # else:
     #     if ManufacturerForm(request.POST).is_valid():
     #         ManufacturerForm(request.POST).save()

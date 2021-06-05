@@ -15,12 +15,12 @@
     </div>
 {% endblock %}
 {% block content_title %}
-    <h2>
-        <small>
-            <a class="fa fa-plus btn btn-outline-success"
-               href="{% url 'purchase_related:add_or_update' %}">&nbsp;&nbsp;新增采购</a>
-        </small>
-    </h2>
+    <span class="input-group-btn">
+                <button type="button" class="fa fa-plus btn btn-outline-success"
+                        onclick="window.location.href='{% url 'purchase_related:add_or_update' %}'">
+                新增采购
+                </button>
+    </span>
 {% endblock %}
 {% block content %}
     <table id="datatable-buttons"
@@ -119,6 +119,7 @@
         {#            {% endfor %}#}
         {#        {% endfor %}#}
 
+
         <!--优化数据结构 延迟大约1.6秒左右 -->
         {% for data_item in data %}
             {% if data_item.rel|length  > 1 %}
@@ -170,7 +171,7 @@
                     <td style="vertical-align: middle;border: solid rgba(68,79,87,0.21) 1px;">{{ data_item.purchase.form_number }}</td>
                     <td style="vertical-align: middle;border: solid rgba(68,79,87,0.21) 1px;">{{ data_item.purchase.contract_number }}</td>
                     <td style="vertical-align: middle;border: solid rgba(68,79,87,0.21) 1px;">{{ data_item.purchase.project.project_name }}</td>
-                    <td style="vertical-align: middle;border: solid rgba(68,79,87,0.21) 1px;">{{ data_item.rel.0.product_name}}</td>
+                    <td style="vertical-align: middle;border: solid rgba(68,79,87,0.21) 1px;">{{ data_item.rel.0.product_name }}</td>
                     <td style="vertical-align: middle;border: solid rgba(68,79,87,0.21) 1px;">{{ data_item.rel.0.product_model }}</td>
                     <td style="vertical-align: middle;border: solid rgba(68,79,87,0.21) 1px;">{{ data_item.rel.0.unit_price }}</td>
                     <td style="vertical-align: middle;border: solid rgba(68,79,87,0.21) 1px;">{{ data_item.rel.0.quantity }}</td>
@@ -182,6 +183,75 @@
                             class="fa fa-edit"
                             name={{ user.id }}></a>&nbsp;&nbsp;
                         <a href="{% url 'purchase_related:delete_purchase' pk=data_item.purchase.id %}"
+                           class="fa fa-trash"
+                           name="{{ user.id }}"></a>
+                    </td>
+                </tr>
+            {% endif %}
+        {% endfor %}
+        <!--使用values和values_list 延迟大概0.7秒左右 -->
+        {% for purchase in purchases %}
+            {% if purchase.rel|length  > 1 %}
+                {% with rowcount=purchase.rel|length %}
+                    <tr>
+                        <td rowspan="{{ rowcount }}"
+                            style="vertical-align: middle;border: solid rgba(68,79,87,0.21) 1px;">{{ forloop.counter }}</td>
+                        <td rowspan="{{ rowcount }}"
+                            style="vertical-align: middle;border: solid rgba(68,79,87,0.21) 1px;">{{ purchase.form_number }}</td>
+                        <td rowspan="{{ rowcount }}"
+                            style="vertical-align: middle;border: solid rgba(68,79,87,0.21) 1px;">{{ purchase.contract_number }}</td>
+                        <td rowspan="{{ rowcount }}"
+                            style="vertical-align: middle;border: solid rgba(68,79,87,0.21) 1px;">{{ purchase.project__project_name }}</td>
+                        <td>{{ purchase.rel.0.1 }}</td>
+                        <td>{{ purchase.rel.0.2 }}</td>
+                        <td>{{ purchase.rel.0.3 }}</td>
+                        <td>{{ purchase.rel.0.0 }}</td>
+                        <td rowspan="{{ rowcount }}"
+                            style="vertical-align: middle;border: solid rgba(68,79,87,0.21) 1px;">{{ purchase.purchase_date | date:"Y-m-d" }}</td>
+                        <td rowspan="{{ rowcount }}"
+                            style="vertical-align: middle;border: solid rgba(68,79,87,0.21) 1px;">{{ purchase.demand_person }}</td>
+                        <td rowspan="{{ rowcount }}"
+                            style="vertical-align: middle;border: solid rgba(68,79,87,0.21) 1px;">{{ purchase.handle_man }}</td>
+                        <td rowspan="{{ rowcount }}"
+                            style="vertical-align: middle;border: solid rgba(68,79,87,0.21) 1px;"><a
+                                href="{% url 'purchase_related:get_one_purchase' pk=purchase.id %}"
+                                class="fa fa-edit"
+                                name={{ user.id }}></a>&nbsp;&nbsp;
+                            <a href="{% url 'purchase_related:delete_purchase' pk=purchase.id %}"
+                               class="fa fa-trash"
+                               name="{{ user.id }}"></a>
+                        </td>
+                    </tr>
+                    {% for r in purchase.rel %}
+                        {% if forloop.counter > 1 %}
+                            <tr>
+                                <td>{{ r.1 }}</td>
+                                <td>{{ r.2 }}</td>
+                                <td>{{ r.3 }}</td>
+                                <td>{{ r.0 }}</td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                {% endwith %}
+
+            {% else %}
+                <tr>
+                    <td style="vertical-align: middle;border: solid rgba(68,79,87,0.21) 1px;">{{ forloop.counter }}</td>
+                    <td style="vertical-align: middle;border: solid rgba(68,79,87,0.21) 1px;">{{ purchase.form_number }}</td>
+                    <td style="vertical-align: middle;border: solid rgba(68,79,87,0.21) 1px;">{{ purchase.contract_number }}</td>
+                    <td style="vertical-align: middle;border: solid rgba(68,79,87,0.21) 1px;">{{ purchase.project__project_name }}</td>
+                    <td style="vertical-align: middle;border: solid rgba(68,79,87,0.21) 1px;">{{ purchase.rel.0.1 }}</td>
+                    <td style="vertical-align: middle;border: solid rgba(68,79,87,0.21) 1px;">{{ purchase.rel.0.2 }}</td>
+                    <td style="vertical-align: middle;border: solid rgba(68,79,87,0.21) 1px;">{{ purchase.rel.0.3 }}</td>
+                    <td style="vertical-align: middle;border: solid rgba(68,79,87,0.21) 1px;">{{ purchase.rel.0.0 }}</td>
+                    <td style="vertical-align: middle;border: solid rgba(68,79,87,0.21) 1px;">{{ purchase.purchase_date | date:"Y-m-d" }}</td>
+                    <td style="vertical-align: middle;border: solid rgba(68,79,87,0.21) 1px;">{{ purchase.demand_person }}</td>
+                    <td style="vertical-align: middle;border: solid rgba(68,79,87,0.21) 1px;">{{ purchase.handle_man }}</td>
+                    <td style="vertical-align: middle;border: solid rgba(68,79,87,0.21) 1px;"><a
+                            href="{% url 'purchase_related:get_one_purchase' pk=purchase.id %}"
+                            class="fa fa-edit"
+                            name={{ user.id }}></a>&nbsp;&nbsp;
+                        <a href="{% url 'purchase_related:delete_purchase' pk=purchase.id %}"
                            class="fa fa-trash"
                            name="{{ user.id }}"></a>
                     </td>

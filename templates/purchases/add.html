@@ -19,7 +19,6 @@
     <span id="minus" style="margin-top: 3px" class="fa fa-minus btn btn-outline-primary"></span>
 
 
-
 {% endblock %}
 {% block content %}
     <div class="x_content">
@@ -40,7 +39,7 @@
                         class="required">*</span></label>
                 <div class="col-md-6 col-sm-6">
                     <input class="form-control" name="contract_number" type="text" placeholder="CS-CG-20200904-0024"
-                    value="{{ purchase.contract_number }}"/>
+                           value="{{ purchase.contract_number }}"/>
                     <span style="color: red; font-weight: bold"></span>
                 </div>
             </div>
@@ -51,15 +50,20 @@
                     <div class="col-md-6 col-sm-6">
                         <select class="form-control" name="project">
                             <option>请选择</option>
+                            <!-- 有project-->
                             {% if purchase.project != null %}
                                 {% with this_project_id=purchase.project.id %}
+                                    <!--将project遍历-->
                                     {% for project in projects %}
+                                        <!--如果当前purchase的project.id等于当前project的id，将当前project选中-->
                                         {% if this_project_id == project.id %}
                                             <option selected="selected"
-                                                    value="{{ project.id }}">{{ project.project_name }}</option>
+                                                    value="{{ project.id }}">{{ project.project_name }}
+                                            </option>
                                         {% else %}
                                             <option
-                                                    value="{{ project.id }}">{{ project.project_name }}</option>
+                                                    value="{{ project.id }}">{{ project.project_name }}
+                                            </option>
                                         {% endif %}
                                     {% endfor %}
                                 {% endwith %}
@@ -83,10 +87,12 @@
                                         {% for product in products %}
                                             {% if product.id == this_product_id %}
                                                 <option value="{{ product.id }}"
-                                                        selected>{{ product.product_name }} {{ product.product_model }}</option>
+                                                        selected>{{ product.product_name }} {{ product.product_model }}
+                                                </option>
                                             {% else %}
                                                 <option value="{{ product.id }}"
-                                                >{{ product.product_name }} {{ product.product_model }}</option>
+                                                >{{ product.product_name }} {{ product.product_model }}
+                                                </option>
                                             {% endif %}
                                         {% endfor %}
 
@@ -115,9 +121,9 @@
                     <div class="col-md-6 col-sm-6">
                         <select class="form-control" name="project">
                             <option>请选择</option>
-                                {% for project in projects %}
-                                    <option value="{{ project.id }}">{{ project.project_name }}</option>
-                                {% endfor %}
+                            {% for project in projects %}
+                                <option value="{{ project.id }}">{{ project.project_name }}</option>
+                            {% endfor %}
                         </select>
                     </div>
                 </div>
@@ -168,7 +174,9 @@
                     <br/>
                     <div class="col-md-6 offset-md-3">
                         <button id="go_add" type="button" class="btn btn-danger">提 交</button>
-                        {% if purchase is None %}<button type='reset' class="btn btn-warning">重 置</button>{% endif %}
+                        {% if purchase is None %}
+                            <button type='reset' class="btn btn-warning">重 置</button>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -176,5 +184,6 @@
     </div>
 {% endblock %}
 {% block javascript %}
+    <script src="/static/custom/common.js"></script>
     <script src="/static/custom/purchase_add.js"></script>
 {% endblock %}

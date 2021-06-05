@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'project_manage.apps.ProjectManageConfig',
     'purchase_manage.apps.PurchaseManageConfig',
     'consumer_manage.apps.UserManageConfig',
+    'equipment_manage.apps.EquipmentManageConfig',
 
 ]
 
@@ -98,7 +99,7 @@ WSGI_APPLICATION = 'Warehouse_Management_System.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ware',
+        'NAME': 'testing',
         'USER': 'root',
         'PASSWORD': '@Wbwwen31415926',
         'HOST': '39.104.84.255',

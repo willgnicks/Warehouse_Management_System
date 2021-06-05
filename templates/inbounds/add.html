@@ -6,47 +6,56 @@
     </div>
 {% endblock %}
 {% block content_title %}
-    <h2>新增入库&nbsp;
+    <h2>{% if inbound is not None %}修改入库单{% else %}新增入库{% endif %}&nbsp;
         <small>
             <a class="fa fa-angle-double-right"></a>
             &nbsp;&nbsp;
         </small>
-
     </h2>
 
 {% endblock %}
 {% block content %}
     <div class="x_content">
-        <form action="{% url 'inbound_related:add_inbound' %}" method="post" novalidate>
+        <form action="" novalidate>
             {% csrf_token %}
             <div class="field item form-group">
                 <label class="col-form-label col-md-3 col-sm-3  label-align">入库来源<span
                         class="required">*</span></label>
                 <div class="col-md-6 col-sm-6">
-                    <select class="form-control" name="purchase_belong">
-                        <option>请选择</option>
-                        {% for purchase in purchases %}
-                            <option value="{{ purchase.id }}">
-                                项目名称：{{ purchase.project.project_name }}&nbsp;&nbsp;&nbsp;&nbsp;采购单号： {{ purchase.form_number }}</option>
-                        {% endfor %}
-                    </select>
-                    <span style="color: red; font-weight: bold">{{ inbounds.purchase_belong.errors.0 }}</span>
+                    {% if inbound is not None %}
+                        <select class="form-control" name="purchase" disabled>
+                            <option value="{{ inbound.pp_rel__purchase_id }}" selected>
+                                项目名称：{{ inbound.pp_rel__purchase__project__project_name }}&nbsp;&nbsp;&nbsp;&nbsp;采购单号：{{ inbound.pp_rel__purchase__project__project_name }}</option>
+                        </select>
+                    {% else %}
+                        <select class="form-control" name="purchase">
+                            <option>请选择</option>
+                            {% for purchase in purchases %}
+                                <option value="{{ purchase.id }}">
+                                    项目名称：{{ purchase.project.project_name }}&nbsp;&nbsp;&nbsp;&nbsp;采购单号： {{ purchase.form_number }}</option>
+                            {% endfor %}
+                        </select>
+                    {% endif %}
+
+                    <span style="color: red; font-weight: bold"></span>
                 </div>
             </div>
             <div class="field item form-group">
                 <label class="col-form-label col-md-3 col-sm-3  label-align">入库产品<span
                         class="required">*</span></label>
                 <div class="col-md-6 col-sm-6">
-                    <select class="form-control" name="product_belong">
-                        <option>请选择</option>
-                        {% for purchase in purchases %}
-                            {% for rel in purchase.purchaseproductrel_set.all %}
-                                <option value="{{ rel.product.id }}">产品名称：{{ rel.product.product_name }}
-                                    &nbsp;&nbsp;&nbsp;&nbsp;采购数量：{{ rel.quantity }}</option>
-                            {% endfor %}
-                        {% endfor %}
-                    </select>
-                    <span style="color: red; font-weight: bold">{{ inbounds.product_belong.errors.0 }}</span>
+                    {% if inbound is not None %}
+                        <select class="form-control" name="pp_rel_id" disabled>
+                            <option value="{{ inbound.pp_rel_id }}">产品名称：{{ inbound.pp_rel__product__product_name }}
+                                产品型号：{{ inbound.pp_rel__product__product_model }}
+                                数量：{{ inbound.pp_rel__quantity }} </option>
+                        </select>
+                    {% else %}
+                        <select class="form-control" name="pp_rel_id">
+                            <option>请先选择入库来源</option>
+                        </select>
+                        <span style="color: red; font-weight: bold"></span>
+                    {% endif %}
                 </div>
             </div>
 
@@ -55,52 +64,54 @@
                         class="required">*</span></label>
                 <div class="col-md-6 col-sm-6">
                     <input class="form-control" name="material_code" placeholder="JP2020040"
-                           value="{{ inbounds.material_code.value }}"
+                           value="{{ inbound.material_code }}"
                            required="required"/>
-                    <span style="color: red; font-weight: bold">{{ inbounds.material_code.errors.0 }}</span>
+                    <span style="color: red; font-weight: bold"></span>
                 </div>
             </div>
-            <div class="field item form-group">
-                <label class="col-form-label col-md-3 col-sm-3  label-align">设备ID<span
-                        class="required">*</span></label>
-                <div class="col-md-6 col-sm-6">
-                    <input class="form-control" name="equipment_ID"
-                           value="{{ inbounds.equipment_ID.value }}" required/>
-                    <span style="color: red; font-weight: bold">{{ inbounds.equipment_ID.errors.0 }}</span>
+            {% if inbound is not None %}
+                {% if inbound.equip|length > 1 %}
+                    {% for e in inbound.equip %}
+                        <div class="field item form-group" name="SN">
+                            <label class="col-form-label col-md-3 col-sm-3  label-align">设备ID<span
+                                    class="required">*</span></label>
+                            <div class="col-md-6 col-sm-6">
+                                <input class="form-control" name="equipment_ID"
+                                       value="{{ e.1 }}" required/>
+                                <span style="color: red; font-weight: bold"></span>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="field item form-group" name="SN">
+                        <label class="col-form-label col-md-3 col-sm-3  label-align">设备ID<span
+                                class="required">*</span></label>
+                        <div class="col-md-6 col-sm-6">
+                            <input class="form-control" name="equipment_ID"
+                                   value="{{ inbound.equip.0.1 }}" required/>
+                            <span style="color: red; font-weight: bold"></span>
+                        </div>
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="field item form-group" name="SN">
+                    <label class="col-form-label col-md-3 col-sm-3  label-align">设备ID<span
+                            class="required">*</span></label>
+                    <div class="col-md-6 col-sm-6">
+                        <input class="form-control" name="equipment_ID"
+                               required/>
+                        <span style="color: red; font-weight: bold"></span>
+                    </div>
                 </div>
-            </div>
-            <div class="field item form-group">
-                <label class="col-form-label col-md-3 col-sm-3  label-align">入库数量<span
-                        class="required">*</span></label>
-                <div class="col-md-6 col-sm-6">
-                    <input class="form-control" name="quantity" placeholder="10"
-                           value="{{ inbounds.quantity.value }}"/>
-                    <span style="color: red; font-weight: bold">{{ inbounds.quantity.errors.0 }}</span>
-                </div>
-            </div>
-            <div class="field item form-group">
-                <label class="col-form-label col-md-3 col-sm-3  label-align">入库时间<span
-                        class="required">*</span></label>
-                <div class="col-md-6 col-sm-6">
-                    <input class="form-control" name="in_house_date" value="{{ inbounds.in_house_date.value }}"
-                           required/>
-                    <span style="color: red; font-weight: bold">{{ inbounds.in_house_date.errors.0 }}</span>
-                </div>
-            </div>
-            <div class="field item form-group">
-                <label class="col-form-label col-md-3 col-sm-3  label-align">设备状态<span
-                        class="required">*</span></label>
-                <div class="col-md-6 col-sm-6">
-                    <input class="form-control" name="status" value="{{ inbounds.status.value }}" required/>
-                    <span style="color: red; font-weight: bold">{{ inbounds.status.errors.0 }}</span>
-                </div>
-            </div>
+            {% endif %}
+
+
             <div class="field item form-group">
                 <label class="col-form-label col-md-3 col-sm-3  label-align">备注<span
                         class="required">&nbsp;</span></label>
                 <div class="col-md-6 col-sm-6">
                     <textarea class="form-control" name="comments"
-                              placeholder="备注其他信息">{{ inbounds.comments.value }}</textarea>
+                              placeholder="备注其他信息">{{ inbound.comments }}</textarea>
                     <span style="color: #ff0000; font-weight: bold">{{ inbounds.comments.errors.0 }}</span>
                 </div>
             </div>
@@ -112,11 +123,17 @@
                 <div class="form-group">
                     <br/>
                     <div class="col-md-6 offset-md-3">
-                        <button type='submit' class="btn btn-danger">提 交</button>
-                        <button type='reset' class="btn btn-warning">重 置</button>
+                        <button id="go_add" type="button" class="btn btn-danger">提 交</button>
+                        {% if inbound is not None %}<span id="inbound_id" style="display: none">{{ inbound.id }}</span>{% endif %}
+                        {% if inbound is None %}
+                            <button type='reset' class="btn btn-warning">重 置</button>{% endif %}
                     </div>
                 </div>
             </div>
         </form>
     </div>
+{% endblock %}
+{% block javascript %}
+    <script src="/static/custom/common.js"></script>
+    <script src="/static/custom/inbound_add.js"></script>
 {% endblock %}

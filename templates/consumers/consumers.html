@@ -15,11 +15,13 @@
     </div>
 {% endblock %}
 {% block content_title %}
-    <h2>
-        <small>
-            <a class="fa fa-plus btn btn-outline-success" href="{% url 'consumer_related:add_consumer' %}">&nbsp;&nbsp;新增用户</a>
-        </small>
-    </h2>
+    <span class="input-group-btn">
+                <button type="button" class="fa fa-plus btn btn-outline-success"
+                        onclick="window.location.href='{% url 'consumer_related:add_consumer' %}'">
+                新增用户
+                </button>
+    </span>
+
 {% endblock %}
 {% block content %}
     <table id="datatable-buttons"

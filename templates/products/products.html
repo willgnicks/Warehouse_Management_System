@@ -17,12 +17,12 @@
     </div>
 {% endblock %}
 {% block content_title %}
-    <h2>
-        <small>
-            <a class="fa fa-plus btn btn-outline-success"
-               href="{% url 'product_related:add_product' %}">&nbsp;&nbsp;新增产品</a>
-        </small>
-    </h2>
+    <span class="input-group-btn">
+                <button type="button" class="fa fa-plus btn btn-outline-success"
+                        onclick="window.location.href='{% url 'product_related:add_product' %}'">
+                新增产品
+                </button>
+    </span>
 {% endblock %}
 {% block content %}
     <table id="datatable-buttons" class="table table-striped table-bordered"

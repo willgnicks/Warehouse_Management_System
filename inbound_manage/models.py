@@ -1,17 +1,14 @@
 from django.db import models
-from purchase_manage.models import Purchase
+from product_manage.models import PurchaseProductRel
 
 
 # Create your models here.
 
 
 class Inbound(models.Model):
-    material_code = models.CharField(max_length=30)
-    purchase_belong = models.ForeignKey(to=Purchase, on_delete=models.DO_NOTHING)
-    quantity = models.SmallIntegerField()
-    equipment_ID = models.CharField(max_length=40)
-    in_house_date = models.DateField()
-    status = models.CharField(max_length=30)
+    material_code = models.CharField(max_length=30, unique=True)
+    in_house_date = models.DateField(auto_now=True)
+    pp_rel = models.ForeignKey(to=PurchaseProductRel, on_delete=models.DO_NOTHING)
     comments = models.CharField(max_length=50)
     # 删除
     flag = models.BooleanField(choices=[(True, '未删除'), (False, '已删除')], default=True)
@@ -21,7 +18,7 @@ class Inbound(models.Model):
         return True
 
     class Meta:
-        ordering = ['material_code']
+        ordering = ['id']
 
 
 class Receipts(models.Model):

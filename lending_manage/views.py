@@ -21,12 +21,13 @@ class LendingForm(ModelForm):
 
 
 # Create your views here.
-def get_all_lendings(request):
+def get_all_lending(request):
     return get_all(request=request, klass=Lending)
 
 
 def add_lending(request):
     return add_or_update(request=request,
+                         klass=Lending,
                          form_class=LendingForm,
                          kwargs={'reverse_url': 'lending_related:all_lending_details'})
     # else:

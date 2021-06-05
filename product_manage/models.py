@@ -1,5 +1,4 @@
 from django.db import models
-from consumer_manage.models import Consumer
 from manufacturer_manage.models import Manufacturer
 from purchase_manage.models import Purchase
 
@@ -37,7 +36,7 @@ class PurchaseProductRel(models.Model):
     purchase = models.ForeignKey(Purchase, on_delete=models.DO_NOTHING)
     product = models.ForeignKey(Product, on_delete=models.DO_NOTHING)
     quantity = models.SmallIntegerField()
+    flag = models.BooleanField(choices=[(True, '已入库'), (False, '未入库')], default=False)
 
     class Meta:
         ordering = ['id']
-

@@ -12,6 +12,7 @@ class Purchase(models.Model):
     project = models.ForeignKey(to=Project, null=True, on_delete=models.DO_NOTHING)
     # 删除
     flag = models.BooleanField(choices=[(True, '未删除'), (False, '已删除')], default=True)
+    inbound_flag = models.BooleanField(choices=[(True, '已入库'), (False, '未入库')], default=False)
 
     def __isClosed__(self):
         return self.flag
@@ -23,6 +24,3 @@ class Purchase(models.Model):
 class Receipts(models.Model):
     receipt = models.CharField(max_length=100)
     specify_purchase = models.ForeignKey(to=Purchase, on_delete=models.DO_NOTHING)
-
-
-

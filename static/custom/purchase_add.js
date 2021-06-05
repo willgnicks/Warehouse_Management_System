@@ -20,84 +20,10 @@ error_message = {
 }
 selected = []
 cleaned_data = {}
-product = []
-quantity = []
 purchase_id = 0
 
 // onchange:valid_form(fields, exclude)
 
-function excludes_fields() {
-    // 排除选项数组中有内容
-    if (exclude.length > 0) {
-        // 遍历排除选项，如域中有排除选项中的元素，将其删除
-        for (let element of exclude) {
-            let index = fields.indexOf(element)
-            if (index >= 0) {
-                fields.splice(index, 1)
-            }
-        }
-    }
-}
-
-/**
- * 对于清除了排除选项的域进行验证，将验证每个域中字段的空值与否，格式是否正确
- * @param fields 传入域
- * @param exclude 传入排除选项
- * @returns {boolean} 返回验证结果
- */
-function valid_form() {
-    let flag = true
-    for (let index in fields) {
-        let element = fields[index]
-        if (element != 'product' && element != 'quantity') {
-            // 遍历域中元素，如果该元素不为产品或数量时
-            let path = "input[name='" + element + "']"
-            let val = $(path).val()
-            if (val == "") {
-                // input中为空，验证不通过，提示错误信息
-                $(path).next('span').text(error_message[element]['required'])
-                if (flag) {
-                    flag = false
-                }
-            } else {
-
-                // input不为空，验证通过，清除错误信息
-                $(path).next('span').text('')
-                cleaned_data[element] = val
-            }
-        } else {
-            // 如果是产品或者数量时，那么选择器双重条件选取产品和数量
-            let path = "input[name='" + element + "'],select[name='" + element + "']"
-            $(path).each(function (index) {
-                // 对所有数量的input和产品的select遍历验证
-                let val = $(this).val()
-                if (val == "") {
-                    // 如果为空，验证不通过，提示错误信息
-                    if (flag) {
-                        flag = false
-                    }
-                    $(this).next('span').text(error_message[element]['required'])
-                } else if (!/^[1-9]\d*$/.test(val)) {
-                    // 验证格式是否为数字，如未选产品或填数量不为数字，验证不通过，提示错误信息
-                    $(this).next('span').text(error_message[element]['invalid'])
-                    if (flag) {
-                        flag = false
-                    }
-                } else {
-                    // 验证通过，清除错误信息
-                    $(this).next('span').text('')
-                    if (element == 'product') {
-                        product[index] = val
-                    } else {
-                        quantity[index] = val
-                    }
-                }
-            })
-        }
-
-    }
-    return flag
-}
 
 /**
  * 加载页面去查询该数据，如果数据存在，那么修改counter
@@ -128,23 +54,6 @@ function load_by_page() {
     }
 }
 
-// function is_this_occupied(keyword,value){
-//     let path = '/purchases/'+keyword+'/'
-//     $.ajax({
-//         url: path,
-//         dataType: 'json',
-//         type: 'get',
-//         data: {'request': value},
-//         success:function (data){
-//             return data
-//         }
-//     })
-//
-//
-//
-//
-// }
-
 /**
  *
  * @param selected_index 监听选择框在所有该类选择框的索引
@@ -171,7 +80,6 @@ function remove_or_append(selected_index, selected_option_value, operation) {
 $(function ($) {
     window.onload = function () {
         load_by_page()
-        excludes_fields()
     }
 
     let previous
@@ -200,7 +108,6 @@ $(function ($) {
             } else {
                 // 改变前的值不为请选择，改变后的值不为请选择
                 // 那么显示改变前值对应选项并从数组删除，那么隐藏改变后值对应选项并将该值插入数组
-
                 remove_or_append(this_index, previous, 1)
                 console.log(selected)
                 selected[this_index] = text
@@ -239,8 +146,8 @@ $(function ($) {
             let q = $("input[name='quantity']:last").val()
             if (val != '请选择') {
                 // 删除该行时，如果该行有选的值，该值必然在selected中，那么需要删除该行前将已选项释放显示，从数组中删除，删除完成后再删除改行
-                product.splice(product.indexOf(val), 1)
-                quantity.splice(quantity.indexOf(q), 1)
+                cleaned_data['product'].splice(cleaned_data['product'].indexOf(val), 1)
+                cleaned_data['quantity'].splice(cleaned_data['quantity'].indexOf(q), 1)
                 let this_index = $("select[name='product']:last").index("select[name='product']")
                 remove_or_append(this_index, val, 1)
                 selected.splice(this_index, 1)
@@ -259,16 +166,13 @@ $(function ($) {
         if (purchase_id != 0) {
             cleaned_data['id'] = purchase_id
         }
-        if (valid_form()) {
-            console.log(cleaned_data)
+        if (valid_form(excludes_fields(fields, exclude), ['product', 'quantity'])) {
             let project_val = $("select[name='project']").val()
             if (project_val != '请选择') {
                 cleaned_data['project_id'] = project_val
             }
-            cleaned_data['product'] = product
-            cleaned_data['quantity'] = quantity
             let val = $("[name='csrfmiddlewaretoken']").val()
-
+            console.log(cleaned_data)
             $.ajax({
                 url: '/purchases/POST/',
                 type: 'POST',
@@ -277,33 +181,26 @@ $(function ($) {
                 success: function (data) {
                     window.location.href = '/purchases/'
                 }
-
             })
-
         }
-
-
     });
 
     $("input[name='form_number'], input[name='contract_number']").blur(function () {
         let query = $(this).attr('name')
         let val = $(this).val()
         $.ajax({
-                url: "/purchases/GET/" + query + "/",
-                type: 'get',
-                dataType: 'json',
-                data: {'val': val},
-                success: function (data) {
-                    if (data['status'] == 'unavailable') {
-                        $("input[name='"+data['component']+"']").next('span').text('该编号已被使用')
-                    }else{
-                        $("input[name='"+data['component']+"']").next('span').text('')
-                    }
-
-
+            url: "/purchases/GET/" + query + "/",
+            type: 'get',
+            dataType: 'json',
+            data: {'val': val},
+            success: function (data) {
+                if (data['status'] == 'unavailable') {
+                    $("input[name='" + data['component'] + "']").next('span').text('该编号已被使用')
+                } else {
+                    $("input[name='" + data['component'] + "']").next('span').text('')
                 }
-
-            })
+            }
+        })
     })
 
 

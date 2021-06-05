@@ -6,20 +6,21 @@
     <div class="title_right" style="height: 51px">
         <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search" style="margin-top: 6px">
             <div class="input-group">
-                <input type="text" class="form-control" placeholder="搜索...">
+                <input type="text" class="form-control" placeholder="物料编号或产品名称">
                 <span class="input-group-btn">
-                          <button class="btn btn-secondary" type="button">Go!</button>
+                          <button class="btn btn-secondary" type="button">搜索</button>
                 </span>
             </div>
         </div>
     </div>
 {% endblock %}
 {% block content_title %}
-    <h2>
-        <small>
-            <a class="fa fa-plus btn btn-outline-success" href="{% url 'inbound_related:add_inbound' %}">&nbsp;&nbsp;新增入库</a>
-        </small>
-    </h2>
+    <span class="input-group-btn">
+                <button type="button" class="fa fa-plus btn btn-outline-success"
+                        onclick="window.location.href='{% url 'inbound_related:add_or_update' %}'">
+                新增入库
+                </button>
+    </span>
 {% endblock %}
 {% block content %}
     <table id="datatable-buttons"
@@ -31,10 +32,8 @@
             <th>物料编号</th>
             <th>产品名称</th>
             <th>产品型号</th>
-            <th>设备ID</th>
             <th>数量</th>
             <th>入库时间</th>
-            <th>设备状态</th>
             <th>备注</th>
             <th>编辑</th>
         </tr>
@@ -44,16 +43,15 @@
 
             <tr>
                 <td>{{ forloop.counter }}</td>
+                {#                <td>{{ inbound.id }}</td>#}
                 <td>{{ inbound.material_code }}</td>
-                <td>{{ inbound.product_belong.product_name }}</td>
-                <td>{{ inbound.product_belong.product_model }}</td>
-                <td>{{ inbound.equipment_ID }}</td>
-                <td>{{ inbound.quantity }}</td>
+                <td>{{ inbound.pp_rel__product__product_name }}</td>
+                <td>{{ inbound.pp_rel__product__product_model }}</td>
+                <td>{{ inbound.pp_rel__quantity }}</td>
                 <td>{{ inbound.in_house_date | date:"Y-m-d" }}</td>
-                <td>{{ inbound.status }}</td>
                 <td>{{ inbound.comments }}</td>
-                <td><a href="" class="fa fa-wrench"
-                       name={{ inbound.id }}></a>&nbsp;&nbsp;
+                <td><a href="{% url 'inbound_related:get_one_inbound' pk=inbound.id %}" class="fa fa-edit"
+                ></a>&nbsp;&nbsp;
                     <a href="" class="fa fa-trash"
                        name="{{ inbound.id }}"></a>
                 </td>
