@@ -76,7 +76,7 @@ def get_all(request, klass, **kwargs):
     # 获取实参类的类名
     class_name = get_model_name(klass=klass)
     template_url = f'{class_name}/{class_name}.html'
-    print(time.time())
+    start = time.time()
     # 获取查询的内容，根据查询的内容生成q，如果q为空，即没有任何where条件
     query_dic = kwargs.get('kwargs').get('query') if kwargs else {}
     q = Q()
@@ -85,7 +85,6 @@ def get_all(request, klass, **kwargs):
             q.add(Q(**{query: query_dic[query]}), Q.OR)
     # 生成结果集
     values_fields = kwargs.get('kwargs').get('value_field') if kwargs.get('kwargs') is not None else None
-    print(values_fields)
     queryset = klass.objects.all().filter(flag=True).filter(
         q).values(*values_fields) if values_fields is not None else klass.objects.all().filter(flag=True).filter(q)
     # 生成分页器
@@ -100,10 +99,9 @@ def get_all(request, klass, **kwargs):
     # 如果有关系，那么返回该关系的结果集
     if rel_val is not None:
         for index in range(len(queryset)):
-            print(queryset[index].unit_price)
             rel_set.insert(index, queryset[index].__getattribute__(rel_val))
     print(class_name, '&', template_url)
-    print(time.time())
+    print('后台耗时：', time.time() - start, 's')
     return render(request,
                   template_url,
                   {
@@ -209,3 +207,44 @@ def get_one(request, klass, **kwargs):
         for klass in quote_class_list:
             return_dic[get_model_name(klass)] = klass.objects.all()
     return render(request, routine, return_dic)
+
+
+def transform_data(kwargs):
+    """
+    @param kwargs: 任意字典，单元素（bool，int，str），多元素（list， tuple， set），多元素的长度均相等
+           将单元素数据挑出或者长度为1的组合元素挑出， 并列写入字典
+           将多元素并且长度大于1的组合元素挑出， 并列写入字典
+           多元素形成的字典列长度为单个多元素的长度*多元素种类，最后整理完成list切片长度为[:单个多元素的长度]
+    @return: 返回整理的字典列表
+    """
+    # 多元素种类
+    print('transform_data: 整理m2m中m')
+    kinds = [key for key, value in kwargs.items() if type(value) not in (int, bool, str) and len(value) > 1]
+    # 单元素的转入字典
+    single_kv = {key: value for key, value in kwargs.items() if type(value) in (int, str, bool)}
+    # 有一种情况就是多元素的长度为1
+    if len(kinds) == 0:
+        list_val = {key: value[0] for key, value in kwargs.items() if
+                    type(value) in (list, tuple, dict)}
+        list_val.update(single_kv)
+        return [list_val]
+    else:
+        # 多元素所有项生成字典
+        list_val = [{key: val} for key, value in kwargs.items() if
+                    type(value) not in (int, str, bool) and len(value) > 1
+                    for val in value]
+        pre_length = int(len(list_val) / len(kinds))
+        for i in range(pre_length):
+            for j in range(len(kinds)):
+                if j > 0:
+                    list_val[i].update(list_val[i + pre_length * j])
+            list_val[i].update(single_kv)
+        return list_val[:pre_length]
+
+
+def get_the_Q(query_dic):
+    q = Q()
+    if query_dic:
+        for query in query_dic:
+            q.add(Q(**{query: query_dic[query]}), Q.OR)
+    return q

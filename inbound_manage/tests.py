@@ -1,3 +1,12 @@
-from django.test import TestCase
+from django.test import TestCase, client
+from inbound_manage.models import Inbound
 
-# Create your tests here.
+
+class InboundTest(TestCase):
+
+    @staticmethod
+    def test_query():
+        kwargs = {'material_code': 'JP2021'}
+        print(kwargs)
+        count = Inbound.objects.filter(**kwargs).count()
+        print(count)

@@ -1,18 +1,15 @@
 import json
 import time
-
-from django.http import JsonResponse
-from django.shortcuts import render, HttpResponseRedirect
+from django.http import JsonResponse, HttpResponseRedirect
+from django.shortcuts import render
+from django.urls import reverse
 
 from equipment_manage.models import Equipment
-from home_login.views import is_user_login
 from inbound_manage.models import Inbound
 from django.forms import ModelForm
-
 from product_manage.models import PurchaseProductRel
 from purchase_manage.models import Purchase
-from purchase_manage.views import transform_data, increase_or_decrease
-from utils.utils import get_all, add_or_update, get_kwargs, get_bulk
+from utils.utils import get_all, add_or_update, get_kwargs, get_bulk, transform_data
 
 
 class InboundForm(ModelForm):
@@ -29,6 +26,7 @@ class InboundForm(ModelForm):
 
 
 def get_one(request, pk=1):
+    start = time.time()
     value_fields = ['id',
                     'material_code',
                     'comments',
@@ -42,13 +40,13 @@ def get_one(request, pk=1):
     inbound = Inbound.objects.filter(id=pk, flag=True).values(*value_fields).first()
     equip = Equipment.objects.filter(inbound_id=pk).values_list(*['id', 'SN'])
     inbound['equip'] = equip
-    print(inbound)
+    print('后台耗时', time.time() - start, 's')
     return render(request, 'inbounds/add.html',
                   {'inbound': inbound})
 
 
 # GET获取所有inbounds
-def get_all_inbounds(request):
+def get_all_inbounds(request, **kwargs):
     values_fields = ['id',
                      'material_code',
                      'in_house_date',
@@ -57,8 +55,9 @@ def get_all_inbounds(request):
                      'pp_rel__product__product_name',
                      'pp_rel__product__product_model',
                      ]
+    query_dic = kwargs.get('kwargs').get('query') if kwargs else {}
     return get_all(request, klass=Inbound, kwargs={
-        'value_field': values_fields})
+        'value_field': values_fields, 'query': query_dic})
 
 
 # 获取指定采购ID的未入库的pp_rel
@@ -70,24 +69,6 @@ def get_rel(request):
         return JsonResponse({'data': list(queryset)})
 
 
-# 废除使用
-# def serialize_queryset(queryset):
-#     """
-#            将对象的queryset转字典
-#     @param queryset:
-#     @return:
-#     """
-#     if queryset is not None:
-#         fields = [field.attname for field in queryset[0]._meta.fields]
-#         return_list = []
-#         for obj in queryset:
-#             temp = {field: obj.__getattribute__(field) for field in fields}
-#             return_list.append(temp)
-#         return return_list
-#     else:
-#         return []
-
-
 def add_or_update(request):
     """第一次get请求是返回页面，此时等待post添加
        post请求中如果没有js获取的采购id，那么就是新增，如果有采购id，即为更新
@@ -97,6 +78,7 @@ def add_or_update(request):
     start = time.time()
     print('请求方式-->', request.method)
     if request.method == 'GET':
+        print('后台耗时：', time.time() - start, 's')
         return render(request, 'inbounds/add.html',
                       {'purchases': Purchase.objects.filter(inbound_flag=False, flag=1)})
     else:
@@ -137,5 +119,28 @@ def add_or_update(request):
             equipment_bulk = get_bulk(rel_klass=Equipment, args=package)
             Equipment.objects.bulk_create(equipment_bulk)
         print('POST请求完毕')
-        print('共耗时-->', time.time() - start, 's')
+        print('后台耗时-->', time.time() - start, 's')
         return JsonResponse({'status': 'success'})
+
+
+# 删除
+def delete_one(request, pk):
+    Inbound.objects.filter(id=pk).update(flag=False)
+    return HttpResponseRedirect(reverse('inbound_related:all_inbounds_details'))
+
+
+# 搜索
+def get_query_inbound(request):
+    query_data = request.GET.get('query') if request.GET.get('query') is not None else None
+    kwargs = {'material_code__icontains': query_data,
+              'pp_rel__product__product_name__icontains': query_data} if query_data is not None else {}
+    return get_all_inbounds(request, kwargs={'query': kwargs})
+
+
+# 查是否已使用
+def check_occupy(request, query):
+    query_val = request.GET.get('val')
+    kwargs = {query: query_val}
+    count = Inbound.objects.filter(**kwargs).count()
+    data = {'status': '200'} if count == 0 else {'status': '400'}
+    return JsonResponse(data)

@@ -56,7 +56,6 @@ $(function ($) {
                 data: {'purchase_id': val},
                 success: function (data) {
                     let list = data.data
-                    console.log(list)
                     // 将数据插入pp_rel的select中
                     for (let index in list) {
                         let obj = list[index]
@@ -75,7 +74,6 @@ $(function ($) {
     $('select[name="pp_rel_id"]').on('change', function () {
         // 显示相同的设备ID的input框
         let quantity = $(this).children('option:selected').attr('name')
-        console.log(quantity)
         if (quantity > 1 && quantity != undefined) {
             for (let i = 1; i < quantity; i++) {
                 $('div[name="SN"]:last').after($('div[name="SN"]:first').clone(true))
@@ -98,11 +96,9 @@ $(function ($) {
 
 
     $("#go_add").click(function () {
-
         if ($('#inbound_id').text() != '') {
             cleaned_data['id'] = $('#inbound_id').text()
         }
-        console.log(cleaned_data)
         if (valid_form(excludes_fields(fields, exclude), ['equipment_ID'])) {
             let val = $("[name='csrfmiddlewaretoken']").val()
             let comments = $("textarea[name='comments']").val()
@@ -121,26 +117,27 @@ $(function ($) {
         }
     });
 
-    // $("input[name='form_number'], input[name='contract_number']").blur(function () {
-    //     let query = $(this).attr('name')
-    //     let val = $(this).val()
-    //     $.ajax({
-    //         url: "/purchases/GET/" + query + "/",
-    //         type: 'get',
-    //         dataType: 'json',
-    //         data: {'val': val},
-    //         success: function (data) {
-    //             if (data['status'] == 'unavailable') {
-    //                 $("input[name='" + data['component'] + "']").next('span').text('该编号已被使用')
-    //             } else {
-    //                 $("input[name='" + data['component'] + "']").next('span').text('')
-    //             }
-    //
-    //
-    //         }
-    //
-    //     })
-    // })
+    $("input[name='material_code'], input[name='equipment_ID']").blur(function () {
+        let current = $(this)
+        let query = $(this).attr('name')
+        let val = $(this).val()
+        if (query === 'equipment_ID') {
+            query = 'equipment__SN'
+        }
+        $.ajax({
+            url: "/inbounds/GET/" + query + "/",
+            type: 'get',
+            dataType: 'json',
+            data: {'val': val},
+            success: function (data) {
+                if (parseInt(data['status']) !== 200) {
+                    current.next('span').text('该内容已被占用')
+                } else {
+                    current.next('span').text('')
+                }
+            }
+        })
+    })
 
 
 });

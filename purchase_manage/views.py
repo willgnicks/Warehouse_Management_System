@@ -8,16 +8,14 @@ from django.shortcuts import render, reverse
 from purchase_manage.models import Purchase
 from product_manage.models import Product, PurchaseProductRel
 from project_manage.models import Project
-from utils.utils import get_kwargs, get_bulk
+from utils.utils import get_kwargs, get_bulk, transform_data, get_the_Q
 
 
 # 搜索
 def get_query_purchase(request):
-    print(request.GET)
-
     query_data = request.GET.get('query') if request.GET.get('query') is not None else None
-    kwargs = {'form_number__contains': query_data,
-              'contract_number__contains': query_data} if query_data is not None else {}
+    kwargs = {'form_number__icontains': query_data,
+              'contract_number__icontains': query_data} if query_data is not None else {}
     return get_all_purchases(request, kwargs={'query': kwargs})
 
 
@@ -42,7 +40,7 @@ def get_one(request, pk=1):
     purchase = Purchase.objects.filter(id=pk).first()
     return render(request, 'purchases/add.html',
                   {'purchase': purchase, 'products': get_products_list(), 'projects': get_projects_list(),
-                   'title': '修改订单'})
+                   'title': '修改采购订单'})
 
 
 # 产品列表
@@ -61,21 +59,24 @@ def get_all_purchases(request, **kwargs):
     @param request:
     @return:
     """
+    start = time.time()
     page_number = request.GET.get('page') if request.GET.get('page') is not None else 1
     query_dic = kwargs.get('kwargs').get('query') if kwargs else {}
-    #  查询条件
-    q = Q()
-    if query_dic:
-        for query in query_dic:
-            q.add(Q(**{query: query_dic[query]}), Q.OR)
     # 查询结果集
-    start = time.time()
-    purchases = Purchase.objects.all().filter(flag=True).filter(q).values(
-        *['id', 'form_number', 'contract_number', 'project__project_name', 'purchase_date', 'demand_person',
-          'handle_man'])
+    purchase_fields = ['id',
+                       'form_number',
+                       'contract_number',
+                       'project__project_name',
+                       'purchase_date',
+                       'demand_person',
+                       'handle_man']
+    purchases = Purchase.objects.all().filter(flag=True).filter(get_the_Q(query_dic)).values(*purchase_fields)
+    pp_rel_fields = ['quantity',
+                     'product__product_name',
+                     'product__product_model',
+                     'product__unit_price']
     for purchase in purchases:
-        rel = PurchaseProductRel.objects.filter(purchase_id=purchase.get('id')).values_list(
-            *['quantity', 'product__product_name', 'product__product_model', 'product__unit_price'])
+        rel = PurchaseProductRel.objects.filter(purchase_id=purchase.get('id')).values_list(*pp_rel_fields)
         purchase['rel'] = rel
     # 分页
     end = time.time()
@@ -84,46 +85,6 @@ def get_all_purchases(request, **kwargs):
     page_data = paginator.page(number=page_number)
     return render(request, 'purchases/purchases.html',
                   {'purchases': page_data, 'count': paginator.count})
-
-
-# 废除
-# def reform_data(DATA):
-#     """
-#     datatype  [{purchase:purchase_obj, rel:[{quantity:val,name:val, model:val,price:val},
-#                                             {quantity:val,name:val, model:val,price:val},
-#                                             ]
-#               }]
-#     @param DATA:
-#     @return:
-#     """
-#     return_list = []
-#     for purchase in DATA:
-#         relation = purchase.purchaseproductrel_set.all()
-#         result = {'purchase': purchase}
-#         rel_list = []
-#         for r in relation:
-#             temp = {'product_name': r.product.product_name, 'product_model': r.product.product_model,
-#                     'unit_price': r.product.unit_price, 'quantity': r.quantity}
-#             rel_list.append(temp)
-#         result.update({'rel': rel_list})
-#         return_list.append(result)
-#     return return_list
-
-
-# 废除
-# def reform_data_2(DATA):
-#     return_list = []
-#     for purchase in DATA:
-#         # temp = {}
-#         result = {'purchase': purchase}
-#         relation = purchase.purchaseproductrel_set.all()
-#         result['product_name'] = [r.product.product_name for r in relation]
-#         result['unit_price'] = [r.product.unit_price for r in relation]
-#         result['product_model'] = [r.product.product_model for r in relation]
-#         result['quantity'] = [r.quantity for r in relation]
-#         # result.update({'rel': temp})
-#         return_list.append(result)
-#     return return_list
 
 
 # 添加或更新
@@ -137,7 +98,7 @@ def add_or_update(request):
     print('请求方式-->', request.method)
     if request.method == 'GET':
         return render(request, 'purchases/add.html',
-                      {'title': '新增采购', 'products': get_products_list(), 'projects': get_projects_list()})
+                      {'title': '新增采购订单', 'products': get_products_list(), 'projects': get_projects_list()})
     else:
         # 获取数据包
         package_data = json.loads(request.POST.get('package_data'))
@@ -170,7 +131,7 @@ def add_or_update(request):
             PurchaseProductRel.objects.bulk_create(pp_rel_bulk)
         print('POST请求完毕')
         print('结束时间-->', time.time())
-        return JsonResponse({'status': 'success'})
+        return JsonResponse({'status': '200'})
 
 
 # 增加产品或减少产品
@@ -207,36 +168,3 @@ def increase_or_decrease(this_id, klass, rel_klass, package, fields):
     else:
         # 未增减只更新
         rel_klass.objects.bulk_update(get_bulk(rel_klass=rel_klass, args=package, original=rel_set), fields)
-
-
-def transform_data(kwargs):
-    """
-    @param kwargs: 任意字典，单元素（bool，int，str），多元素（list， tuple， set），多元素的长度均相等
-           将单元素数据挑出或者长度为1的组合元素挑出， 并列写入字典
-           将多元素并且长度大于1的组合元素挑出， 并列写入字典
-           多元素形成的字典列长度为单个多元素的长度*多元素种类，最后整理完成list切片长度为[:单个多元素的长度]
-    @return: 返回整理的字典列表
-    """
-    # 多元素种类
-    print('transform_data: 整理m2m中m')
-    kinds = [key for key, value in kwargs.items() if type(value) not in (int, bool, str) and len(value) > 1]
-    # 单元素的转入字典
-    single_kv = {key: value for key, value in kwargs.items() if type(value) in (int, str, bool)}
-    # 有一种情况就是多元素的长度为1
-    if len(kinds) == 0:
-        list_val = {key: value[0] for key, value in kwargs.items() if
-                    type(value) in (list, tuple, dict)}
-        list_val.update(single_kv)
-        return [list_val]
-    else:
-        # 多元素所有项生成字典
-        list_val = [{key: val} for key, value in kwargs.items() if
-                    type(value) not in (int, str, bool) and len(value) > 1
-                    for val in value]
-        pre_length = int(len(list_val) / len(kinds))
-        for i in range(pre_length):
-            for j in range(len(kinds)):
-                if j > 0:
-                    list_val[i].update(list_val[i + pre_length * j])
-            list_val[i].update(single_kv)
-        return list_val[:pre_length]

@@ -5,12 +5,12 @@
     </div>
     <div class="title_right" style="height: 51px">
         <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search" style="margin-top: 6px">
-            <div class="input-group">
-                <input type="text" class="form-control" placeholder="物料编号或产品名称">
+            <form action="{% url 'inbound_related:get_query_inbound' %}" class="input-group">
+                <input type="text" class="form-control" name="query" placeholder="物料编号或产品名称">
                 <span class="input-group-btn">
-                          <button class="btn btn-secondary" type="button">搜索</button>
+                          <button class="btn btn-secondary" type="submit">搜索</button>
                 </span>
-            </div>
+            </form>
         </div>
     </div>
 {% endblock %}
@@ -50,15 +50,11 @@
                 <td>{{ inbound.pp_rel__quantity }}</td>
                 <td>{{ inbound.in_house_date | date:"Y-m-d" }}</td>
                 <td>{{ inbound.comments }}</td>
-                <td><a href="{% url 'inbound_related:get_one_inbound' pk=inbound.id %}" class="fa fa-edit"
-                ></a>&nbsp;&nbsp;
-                    <a href="" class="fa fa-trash"
-                       name="{{ inbound.id }}"></a>
+                <td><a href="{% url 'inbound_related:get_one_inbound' pk=inbound.id %}" class="fa fa-edit"></a>&nbsp;&nbsp;
+                    <a href="{% url 'inbound_related:delete_inbound' pk=inbound.id %}" class="fa fa-trash"></a>
                 </td>
             </tr>
         {% endfor %}
-
-
         </tbody>
     </table>
 {% endblock %}
