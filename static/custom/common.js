@@ -34,7 +34,6 @@ function valid_form(fields, array) {
         // 遍历域中元素
         let element = fields[index]
         if ($.inArray(element, array) == -1) {
-            // 如果当前元素不是多项，而是单项
             let path = "input[name='" + element + "'],select[name='" + element + "']"
             let val = $(path).val()
             if (val == "") {
@@ -44,6 +43,7 @@ function valid_form(fields, array) {
                     flag = false
                 }
             } else if (val == '请选择' || val == '请先选择入库来源') {
+                // 如果当前元素不是多项，而是单项
                 // select没有选择有效选项
                 $(path).next('span').text(error_message[element]['invalid'])
                 if (flag) {

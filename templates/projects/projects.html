@@ -19,7 +19,7 @@
     <span class="input-group-btn">
                 <button type="button" class="fa fa-plus btn btn-outline-success"
                         onclick="window.location.href='{% url 'project_related:add_project' %}'">
-                新增项目
+                项目立项
                 </button>
     </span>
 {% endblock %}
@@ -31,19 +31,31 @@
             <th>序号</th>
             <th>项目名称</th>
             <th>项目编号</th>
+            <th>项目状态</th>
             <th>编辑</th>
         </tr>
         </thead>
         <tbody>
         {% for project in projects %}
-                <tr>
-                    <td>{{ forloop.counter }}</td>
-                    <td>{{ project.project_name }}</td>
-                    <td>{{ project.project_code }}</td>
-                    <td><a href="{% url 'project_related:get_one_project' pk=project.id %}" class="fa fa-edit"></a>&nbsp;&nbsp;
-                        <a href="{% url 'project_related:delete_project' pk=project.id %}" class="fa fa-trash"></a>
-                    </td>
-                </tr>
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ project.project_name }}</td>
+                <td>{{ project.project_code }}</td>
+                <td>
+                    {% if project.project_status == 0 %}
+                        已立项
+                    {% elif project.project_status == 1 %}
+                        已采购
+                    {% elif project.project_status == 2 %}
+                        已入库
+                    {% elif project.project_status == 3 %}
+                        已出库
+                    {% endif %}
+                </td>
+                <td><a href="{% url 'project_related:get_one_project' pk=project.id %}" class="fa fa-edit"></a>&nbsp;&nbsp;
+                    <a href="{% url 'project_related:delete_project' pk=project.id %}" class="fa fa-trash"></a>
+                </td>
+            </tr>
         {% endfor %}
 
 

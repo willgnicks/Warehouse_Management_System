@@ -50,7 +50,7 @@ def get_products_list():
 
 # 项目列表
 def get_projects_list():
-    return Project.objects.all().order_by('project_code')
+    return Project.objects.filter(project_status=0).order_by('project_code')
 
 
 # 获取所有采购
@@ -128,6 +128,7 @@ def add_or_update(request):
             # 新增采购产品关系
             pp_rel_bulk = get_bulk(rel_klass=PurchaseProductRel, args=package)
             print(pp_rel_bulk)
+            Project.objects.filter(id=package_data.get('project_id')).update(project_status=1)
             PurchaseProductRel.objects.bulk_create(pp_rel_bulk)
         print('POST请求完毕')
         print('结束时间-->', time.time())

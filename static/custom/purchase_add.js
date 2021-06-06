@@ -8,6 +8,7 @@ fields = [
     'handle_man',
     'quantity',
     'product',
+    'project_id'
 ]
 // 字段域的排除项
 exclude = []
@@ -19,6 +20,7 @@ error_message = {
     'handle_man': {'required': '请填入经手人'},
     'quantity': {'required': '请填入数量', 'invalid': '请填入正确数量'},
     'product': {'invalid': '请选择产品'},
+    'project_id': {'invalid': '请选择采购项目'},
 }
 // 选中的产品名称list
 selected = []
@@ -164,10 +166,6 @@ $(function ($) {
             cleaned_data['id'] = purchase_id
         }
         if (valid_form(excludes_fields(fields, exclude), ['product', 'quantity'])) {
-            let project_val = $("select[name='project']").val()
-            if (project_val !== '请选择') {
-                cleaned_data['project_id'] = project_val
-            }
             let val = $("[name='csrfmiddlewaretoken']").val()
             $.ajax({
                 url: '/purchases/POST/',

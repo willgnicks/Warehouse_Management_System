@@ -31,5 +31,6 @@ urlpatterns = [
     path('receptions/', include('reception_manage.urls', namespace='receptions_related')),
     path('lendings/', include('lending_manage.urls', namespace='lending_related')),
     path('outbounds/', include('outbound_manage.urls', namespace='outbound_related')),
+    path('equipments/', include('equipment_manage.urls', namespace='equipment_related')),
 
 ]

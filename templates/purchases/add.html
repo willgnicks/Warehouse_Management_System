@@ -48,7 +48,7 @@
                     <label class="col-form-label col-md-3 col-sm-3  label-align">所属项目<span
                             class="required">*</span></label>
                     <div class="col-md-6 col-sm-6">
-                        <select class="form-control" name="project">
+                        <select class="form-control" name="project_id">
                             <option>请选择</option>
                             <!-- 有project-->
                             {% if purchase.project != null %}
@@ -73,6 +73,7 @@
                                 {% endfor %}
                             {% endif %}
                         </select>
+                        <span style="color: red; font-weight: bold"></span>
                     </div>
                 </div>
                 {% with set=purchase.purchaseproductrel_set.all %}
@@ -118,12 +119,13 @@
                     <label class="col-form-label col-md-3 col-sm-3  label-align">所属项目<span
                             class="required">*</span></label>
                     <div class="col-md-6 col-sm-6">
-                        <select class="form-control" name="project">
+                        <select class="form-control" name="project_id">
                             <option>请选择</option>
                             {% for project in projects %}
                                 <option value="{{ project.id }}">{{ project.project_name }}</option>
                             {% endfor %}
                         </select>
+                    <span style="color: red; font-weight: bold"></span>
                     </div>
                 </div>
                 <div name="product_unit" class="field item form-group">

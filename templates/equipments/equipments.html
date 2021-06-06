@@ -1,0 +1,100 @@
+{% extends 'layout/base.html' %}
+{% block page_title %}
+
+    <div class="title_left">
+        <h3>设备详情</h3>
+    </div>
+    <div class="title_right" style="height: 51px">
+        <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search" style="margin-top: 6px">
+            <form class="input-group" action="{% url 'project_related:get_query_projects' %}" method="get">
+                <input type="text" class="form-control" name="query" placeholder="项目编号或项目名称">
+                <span class="input-group-btn">
+                          <button class="btn btn-secondary" type="submit">搜索</button>
+                </span>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+{% block content %}
+
+    <table id="datatable-buttons" class="table table-striped table-bordered"
+           style="width:100%; text-align: center">
+        <thead>
+        <tr>
+            <th>序号</th>
+            <th>隶属项目</th>
+            <th>物料编号</th>
+            <th>设备ID</th>
+            <th>产品名称</th>
+            <th>产品型号</th>
+            <th>设备状态</th>
+            <th>入库时间</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for equipment in equipments %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ equipment.inbound__pp_rel__purchase__project__project_name }}</td>
+                <td>{{ equipment.inbound__material_code }}</td>
+                <td>{{ equipment.SN }}</td>
+                <td>{{ equipment.inbound__pp_rel__product__product_name }}</td>
+                <td>{{ equipment.inbound__pp_rel__product__product_model }}</td>
+                <td>
+                    {% if equipment.status_code == 0 %}
+                        在库
+                    {% elif equipment.status_code == 1 %}
+                        出库
+                    {% elif equipment.status_code == 2 %}
+                        外借
+                    {% elif equipment.status_code == 3 %}
+                        内借
+                    {% elif equipment.status_code == 4 %}
+                        领用
+                    {% endif %}
+                </td>
+                <td>{{ equipment.inbound__in_house_date | date:"Y-m-d" }}</td>
+
+                {#                <td><a href="{% url 'project_related:get_one_project' pk=project.id %}" class="fa fa-edit"></a>&nbsp;&nbsp;#}
+                {#                    <a href="{% url 'project_related:delete_project' pk=project.id %}" class="fa fa-trash"></a>#}
+                {#                </td>#}
+            </tr>
+        {% endfor %}
+
+
+        </tbody>
+    </table>
+
+{% endblock %}
+{% block footer %}
+    <div class="col-sm-5">
+        <div class="dataTables_info">
+            {{ equipments.start_index }} - {{ equipments.end_index }} of {{ count }}
+        </div>
+    </div>
+    <div class="col-sm-7">
+        <div class="dataTables_paginate">
+            <ul class="pagination">
+                {% if equipments.has_previous %}
+                    <li class="paginate_button previous"><a href="?page=1">
+                        第一页</a></li>
+                    <li class="paginate_button previous disabled">
+                        <a href="?page={{ equipments.previous_page_number }}">上一页</a>
+                    </li>
+                {% endif %}
+                <li class="paginate_button active"><a
+                        aria-controls="dataTable">第 {{ equipments.number }} 页 /
+                    共 {{ equipments.paginator.num_pages }} 页</a>
+                </li>
+                {% if projects.has_next %}
+                    <li class="paginate_button"><a
+                            href="?page={{ equipments.next_page_number }}">下一页</a>
+                    </li>
+                    <li class="paginate_button"><a
+                            href="?page={{ equipments.paginator.num_pages }}">最后一页
+                    </a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+{% endblock %}

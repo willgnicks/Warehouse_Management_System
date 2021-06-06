@@ -8,6 +8,7 @@ from equipment_manage.models import Equipment
 from inbound_manage.models import Inbound
 from django.forms import ModelForm
 from product_manage.models import PurchaseProductRel
+from project_manage.models import Project
 from purchase_manage.models import Purchase
 from utils.utils import get_all, add_or_update, get_kwargs, get_bulk, transform_data
 
@@ -88,9 +89,11 @@ def add_or_update(request):
         # 先修改中间表中需要入库项的状态为已入库
         PurchaseProductRel.objects.filter(id=package_data.get('pp_rel_id')).update(flag=True)
         # 再查询采购表中该采购的中间表中是否都已经入库了
-        # 如果都入库了，那么修改采购表中该采购的入库状态，在不会显示出来
-        if len(PurchaseProductRel.objects.filter(purchase_id=package_data.get('purchase'), flag=False)) == 0:
-            Purchase.objects.filter(id=package_data.get('purchase')).update(inbound_flag=True)
+        # 如果都入库了，那么该采购单入库状态就为已入库，不会再在入库时显示出来
+        purchase = package_data.get('purchase')
+        if len(PurchaseProductRel.objects.filter(purchase_id=purchase, flag=False)) == 0:
+            Purchase.objects.filter(id=purchase).update(inbound_flag=True)
+            Project.objects.filter(id=Purchase.objects.filter(id=purchase).first().project_id).update(project_status=2)
         # 先增加inbound
         this_inbound = package_data.get('id')
         # 判断是更新还是新增
@@ -126,6 +129,7 @@ def add_or_update(request):
 # 删除
 def delete_one(request, pk):
     Inbound.objects.filter(id=pk).update(flag=False)
+    Equipment.objects.filter(inbound_id=pk).update(flag=False)
     return HttpResponseRedirect(reverse('inbound_related:all_inbounds_details'))
 
 

@@ -9,7 +9,7 @@ class Purchase(models.Model):
     demand_person = models.CharField(max_length=10)
     handle_man = models.CharField(max_length=10)
     purchase_date = models.DateTimeField(auto_now_add=True)
-    project = models.ForeignKey(to=Project, null=True, on_delete=models.DO_NOTHING)
+    project = models.ForeignKey(to=Project, on_delete=models.DO_NOTHING)
     # 删除
     flag = models.BooleanField(choices=[(True, '未删除'), (False, '已删除')], default=True)
     inbound_flag = models.BooleanField(choices=[(True, '已入库'), (False, '未入库')], default=False)

@@ -7,6 +7,7 @@ class Project(models.Model):
     project_name = models.CharField(max_length=30, unique=True)
     # 项目编号
     project_code = models.CharField(max_length=30, unique=True)
+    project_status = models.SmallIntegerField(choices=[(0, '已立项'), (1, '已采购'), (2, '已入库'), (3, '已出库')], default=0)
     # 用来删除项目，实际数据库不删除，展示删除
     flag = models.BooleanField(choices=[(True, '未删除'), (False, '已删除')], default=True)
 
@@ -16,4 +17,3 @@ class Project(models.Model):
     # 文本项目名
     def __str__(self):
         return self.project_name
-

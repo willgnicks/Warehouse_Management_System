@@ -21,17 +21,8 @@ from django.urls import reverse
 
 # Create your views here.
 def get_all_receptions(request):
-    if is_user_login(request):
-        return render(request, 'receptions/receptions.html')
+    return render(request, 'receptions/receptions.html')
 
 
 def add_reception(request):
-    if is_user_login(request):
-        if request.method == 'GET':
-            return render(request, 'receptions/add.html')
-        # else:
-        #     if ManufacturerForm(request.POST).is_valid():
-        #         ManufacturerForm(request.POST).save()
-        #         return HttpResponseRedirect(reverse('man:all_product_details'))
-        #     else:
-        #         return render(request, 'products/add.html', {'products': ManufacturerForm(request.POST)})
+    return render(request, 'receptions/add.html')

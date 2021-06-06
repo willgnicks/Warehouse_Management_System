@@ -8,15 +8,14 @@ from inbound_manage.models import Inbound
 
 class Outbound(models.Model):
     # 项目管理外键
-    project_FK = models.ForeignKey(to=Project, on_delete=models.DO_NOTHING)
+    project = models.ForeignKey(to=Project, on_delete=models.DO_NOTHING)
     # 入库详情外键
-    in_house = models.ForeignKey(to=Inbound, on_delete=models.DO_NOTHING)
+    inbound = models.ForeignKey(to=Inbound, on_delete=models.DO_NOTHING)
     # 出库单据外键
-    request_person = models.CharField(max_length=20)
-    outbound_date = models.DateField()
-    contract_number = models.CharField(max_length=50)
-    form_number = models.CharField(max_length=50)
-    quantity = models.SmallIntegerField()
+    demand_person = models.CharField(max_length=20)
+    outbound_date = models.DateField(auto_now=True)
+    contract_number = models.CharField(max_length=50, unique=True)
+    form_number = models.CharField(max_length=50, unique=True)
     # 删除
     flag = models.BooleanField(choices=[(True, '未删除'), (False, '已删除')], default=True)
 

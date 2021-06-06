@@ -8,7 +8,7 @@ class ProjectForm(ModelForm):
     class Meta:
         model = Project
         fields = '__all__'
-        exclude = ['flag']
+        exclude = ['flag', 'project_status']
         error_messages = {
             'project_name': {'required': '请填入项目名称',
                              'unique': '该项目名已经存在'},
