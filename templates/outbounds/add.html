@@ -5,22 +5,37 @@
     </div>
 {% endblock %}
 {% block content_title %}
-    <h2>新增出库&nbsp;
+    <h2>出库设备&nbsp;
         <small>
-            <a class="fa fa-angle-double-right"></a>&nbsp;&nbsp;
+            <a class="fa fa-angle-double-right"></a>
+            &nbsp;&nbsp;出库产品增减
         </small>
+
     </h2>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <span id="plus" style="margin-top: 3px" class="fa fa-plus btn btn-outline-primary"></span>
+
+    <span id="minus" style="margin-top: 3px" class="fa fa-minus btn btn-outline-primary"></span>
 {% endblock %}
 {% block content %}
     <div class="x_content">
-        <form action="{% url 'outbound_related:add_outbound' %}" method="post" novalidate>
+        <form action="" novalidate>
             {% csrf_token %}
+            <div class="field item form-group">
+                <label class="col-form-label col-md-3 col-sm-3  label-align">申请人<span
+                        class="required">*</span></label>
+                <div class="col-md-6 col-sm-6">
+                    <input class="form-control" name="demand_person" placeholder="韩梅梅"
+                           value="{{ outbound.demand_person }}" required/>
+                    <span style="color: red; font-weight: bold">{{ outbounds.demand_person.errors.0 }}</span>
+                </div>
+            </div>
             <div class="field item form-group">
                 <label class="col-form-label col-md-3 col-sm-3  label-align">销售合同编号<span
                         class="required">*</span></label>
                 <div class="col-md-6 col-sm-6">
                     <input class="form-control" type="text" name="contract_number"
-                           value="{{ outbounds.contract_number.value }}" required/>
+                           placeholder="XS-2020001" value="{{ outbound.contract_number }}" required/>
                     <span style="color: red; font-weight: bold">{{ outbounds.contract_number.errors.0 }}</span>
                 </div>
             </div>
@@ -29,7 +44,7 @@
                         class="required">*</span></label>
                 <div class="col-md-6 col-sm-6">
                     <input class="form-control" type="text" name="form_number"
-                           value="{{ outbounds.form_number.value }}" required/>
+                           placeholder="20210111001" value="{{ outbounds.form_number }}" required/>
                     <span style="color: red; font-weight: bold">{{ outbounds.form_number.errors.0 }}</span>
                 </div>
             </div>
@@ -37,47 +52,33 @@
                 <label class="col-form-label col-md-3 col-sm-3  label-align">项目名称<span
                         class="required">*</span></label>
                 <div class="col-md-6 col-sm-6">
-                    <select class="form-control" name="project_FK">
+                    <select class="form-control" name="project_id">
                         <option>请选择</option>
-                        {% for inbound in inbounds %}
-                            <option value="{{ inbound.purchase_belong.project.id }}">{{ inbound.purchase_belong.project.project_name }}</option>
+                        {% for project in projects %}
+                            <option value="{{ project.id }}">项目名称：{{ project.project_name }}</option>
                         {% endfor %}
                     </select>
                     <span style="color: red; font-weight: bold">{{ outbounds.project_FK.errors.0 }}</span>
                 </div>
             </div>
-            <div class="field item form-group">
+            <div class="field item form-group" name="outbound_unit">
                 <label class="col-form-label col-md-3 col-sm-3  label-align">出库产品<span
                         class="required">*</span></label>
                 <div class="col-md-6 col-sm-6">
-                    <select class="form-control" name="in_house">
+                    <select class="form-control" name="equipment">
                         <option>请选择</option>
-                        {% for inbound in inbounds %}
-                            <option value="{{ inbound.id }}">
-                                {{ inbound.material_code }}{{ inbound.product_belong.product_name }}</option>
+                        {% for equipment in equipments %}
+                            <option value="{{ equipment.id }}">
+                                产品名称：{{ equipment.inbound__pp_rel__product__product_name }}&nbsp;&nbsp;&nbsp;&nbsp;
+                                产品型号：{{ equipment.inbound__pp_rel__product__product_model }}&nbsp;&nbsp;&nbsp;&nbsp;
+                                物料编号：{{ equipment.inbound__material_code }}&nbsp;&nbsp;&nbsp;&nbsp;
+                                设备ID：{{ equipment.SN }}</option>
                         {% endfor %}
                     </select>
                     <span style="color: red; font-weight: bold">{{ outbounds.in_house.errors.0 }}</span>
                 </div>
             </div>
-            <div class="field item form-group">
-                <label class="col-form-label col-md-3 col-sm-3  label-align">出库数量<span
-                        class="required">*</span></label>
-                <div class="col-md-6 col-sm-6">
-                    <input class="form-control" name="quantity"
-                           value="{{ outbounds.quantity.value }}" required/>
-                    <span style="color: red; font-weight: bold">{{ outbounds.quantity.errors.0 }}</span>
-                </div>
-            </div>
-            <div class="field item form-group">
-                <label class="col-form-label col-md-3 col-sm-3  label-align">申请人<span
-                        class="required">*</span></label>
-                <div class="col-md-6 col-sm-6">
-                    <input class="form-control" name="request_person" placeholder="张三丰"
-                           value="{{ outbounds.request_person.value }}" required/>
-                    <span style="color: red; font-weight: bold">{{ outbounds.request_person.errors.0 }}</span>
-                </div>
-            </div>
+
             <div class="clearfix"></div>
             <div class="col-md-6 offset-md-3"></div>
 
@@ -85,11 +86,17 @@
                 <div class="form-group">
                     <br/>
                     <div class="col-md-6 offset-md-3">
-                        <button type='submit' class="btn btn-danger">提 交</button>
-                        <button type='reset' class="btn btn-warning">重 置</button>
+                        <button id="go_add" type="button" class="btn btn-danger">提 交</button>
+                        {% if purchase is None %}
+                            <button type='reset' class="btn btn-warning">重 置</button>
+                        {% endif %}
                     </div>
                 </div>
             </div>
         </form>
     </div>
+{% endblock %}
+{% block javascript %}
+    <script src="/static/custom/common.js"></script>
+    <script src="/static/custom/outbound_add.js"></script>
 {% endblock %}

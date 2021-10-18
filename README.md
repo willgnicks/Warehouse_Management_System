@@ -13,3 +13,29 @@ Django仓库系统
   - Dashboard模块
 ------
 > 各模块均包含各自模型的增删改查，并且在后端除多对多复杂情况之外均使用utils中的函数方法来进行增删改查
+
+
+
+
+
+
+
+
+    server {
+        listen 80;
+        server_name localhost;
+        charset     utf-8;
+        access_log      /data/destiny/nginx_access.log;
+        error_log       /data/destiny/nginx_error.log;
+        client_max_body_size 75M;
+    
+    
+        location /static {
+            alias /data/test/ware/static;
+        }
+    
+        location / {
+            include     /etc/nginx/conf/uwsgi_params;
+            uwsgi_pass  127.0.0.1:8000;
+        }
+    }

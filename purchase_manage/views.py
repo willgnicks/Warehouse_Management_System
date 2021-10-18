@@ -69,19 +69,24 @@ def get_all_purchases(request, **kwargs):
                        'project__project_name',
                        'purchase_date',
                        'demand_person',
-                       'handle_man']
+                       'handle_man',
+                       'purchaseproductrel__quantity',
+                       'purchaseproductrel__product__product_name',
+                       'purchaseproductrel__product__product_model',
+                       'purchaseproductrel__product__unit_price',
+                       ]
     purchases = Purchase.objects.all().filter(flag=True).filter(get_the_Q(query_dic)).values(*purchase_fields)
-    pp_rel_fields = ['quantity',
-                     'product__product_name',
-                     'product__product_model',
-                     'product__unit_price']
-    for purchase in purchases:
-        rel = PurchaseProductRel.objects.filter(purchase_id=purchase.get('id')).values_list(*pp_rel_fields)
-        purchase['rel'] = rel
+    # pp_rel_fields = ['quantity',
+    #                  'product__product_name',
+    #                  'product__product_model',
+    #                  'product__unit_price']
+    # for purchase in purchases:
+    #     rel = PurchaseProductRel.objects.filter(purchase_id=purchase.get('id')).values_list(*pp_rel_fields)
+    #     purchase['rel'] = rel
     # 分页
     end = time.time()
     print('耗时：', end - start, 's')
-    paginator = Paginator(purchases, 10)
+    paginator = Paginator(purchases, 20)
     page_data = paginator.page(number=page_number)
     return render(request, 'purchases/purchases.html',
                   {'purchases': page_data, 'count': paginator.count})

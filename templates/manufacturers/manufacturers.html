@@ -28,12 +28,13 @@
            style="width:100%; text-align: center">
         <thead>
         <tr>
-            <th>序号</th>
-            <th>供应商名称</th>
-            <th>联系人</th>
-            <th>联系方式</th>
-            <th>开始合作日期</th>
-            <th>当前合作状态</th>
+            <th>序号
+            </th>
+            <th> 供应商名称</th>
+            <th> 联系人</th>
+            <th> 联系方式</th>
+            <th> 初始合作日期</th>
+            <th> 当前合作状态</th>
             <th>编辑</th>
         </tr>
         </thead>
@@ -45,15 +46,17 @@
                 <td>{{ manufacturer.manufacturer_name }}</td>
                 <td>{{ manufacturer.manufacturer_linkman }}</td>
                 <td>{{ manufacturer.manufacturer_contact }}</td>
-                <td>{{ manufacturer.cooperation_begin_date | date:'Y-d-m' }}</td>
+                <td>{{ manufacturer.cooperation_begin_date | date:'Y-m-d' }}</td>
                 {% if  manufacturer.is_cooperated == True %}
                     <td>合作中</td>
                 {% else %}
                     <td>未合作</td>
                 {% endif %}
 
-                <td><a href="{% url 'manufacturer_related:get_one_manufacturer' pk=manufacturer.id %}" class="fa fa-edit" name={{ manufacturers.id }}></a>&nbsp;&nbsp;
-                    <a href="{% url 'manufacturer_related:get_one_manufacturer' pk=manufacturer.id %}" class="fa fa-trash" name="{{ manufacturers.id }}"></a>
+                <td><a href="{% url 'manufacturer_related:get_one_manufacturer' pk=manufacturer.id %}"
+                       class="fa fa-edit" name={{ manufacturers.id }}></a>&nbsp;&nbsp;
+                    <a href="{% url 'manufacturer_related:get_one_manufacturer' pk=manufacturer.id %}"
+                       class="fa fa-trash" name="{{ manufacturers.id }}"></a>
                 </td>
             </tr>
         {% endfor %}
@@ -93,4 +96,7 @@
             </ul>
         </div>
     </div>
+{% endblock %}
+{% block javascript %}
+    <script src="/static/custom/common.js"></script>
 {% endblock %}

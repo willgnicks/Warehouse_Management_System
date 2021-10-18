@@ -4,4 +4,5 @@ app_name = 'outbound_related'
 urlpatterns = [
     path('POST/', views.add_outbound, name='add_outbound'),
     path('', views.get_all_outbounds, name='all_outbound_details'),
+    path('<int:pk>/', views.get_one_outbound, name='get_one_outbound'),
 ]

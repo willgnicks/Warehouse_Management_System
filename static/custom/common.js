@@ -83,3 +83,125 @@ function valid_form(fields, array) {
     }
     return flag
 }
+
+
+function insert_a() {
+    const asc_a = '<a style="float: left; margin-top: 2px" class="fa fa-sort-amount-asc"></a>'
+    const desc_a = '<a style="float: right; margin-top: 2px" class="fa fa-sort-amount-desc"></a>'
+    const th = $('thead > tr > th')
+    th.each(function (index) {
+        const length = th.length - 1
+        if (index !== 0 && index !== length) {
+            $(this).append(asc_a)
+            $(this).children().last().after(desc_a)
+
+        }
+    })
+}
+
+//文档加载优先级最高
+$(document).ready(function () {
+    insert_a()
+});
+// //文档加载事件二
+// $(function(){
+// 	// alert("文档加载完成2!");
+// });
+
+$(function ($) {
+
+    function is_int(a) {
+        return /^[0-9]*$/.test(Object.values(a)[0])
+    }
+
+    // 降序排序
+    const int_asc = function (a, b) {
+        return Object.values(b)[0] - Object.values(a)[0]
+    }
+    const str_asc = function (a, b) {
+        return Object.values(b)[0].localeCompare(Object.values(a)[0]);
+    }
+    // 升序排序
+    const int_desc = function (a, b) {
+        return Object.values(a)[0] - Object.values(b)[0]
+    }
+    const str_desc = function (a, b) {
+        return Object.values(a)[0].localeCompare(Object.values(b)[0]);
+
+    }
+    // 获取该列全部数据并返回
+    const get_content = function (index, tr_length, th_length) {
+        let index_content = []
+        for (let i = 0; i < tr_length; i++) {
+            let this_td = th_length * i + index
+            let text = $('tbody > tr > td').eq(this_td).text().trim()
+            let temp = {}
+            temp[i] = text
+            index_content[i] = temp
+        }
+        return index_content
+    }
+    //  0是desc操作， 1是asc操作
+    const sort_table = function (this_td_index, operation) {
+
+        let table = $('tbody')
+        let clone = table.clone(true)
+        clone.children('tbody > tr').remove()
+        const all_tr = $('tbody > tr')
+
+        // # 第一步获取th长度
+        const th_length = $('thead > tr > th').length
+        // # 第二步获取当前点击th的索引值
+        // # 第三步获取共多少行
+        const tr_length = all_tr.length
+        // 取排序内容
+        let content = get_content(this_td_index, tr_length, th_length)
+        let value = content[0][0]
+        // 排序
+        if (operation === 0) {
+            if (is_int(value)) {
+                content.sort(int_desc)
+            } else {
+                content.sort(str_desc)
+            }
+        } else if (operation === 1) {
+            if (is_int(value)) {
+                content.sort(int_asc)
+            } else {
+                content.sort(str_asc)
+            }
+        }
+        // 获得排序后的index序列
+        let sorted_keys = []
+        for (let index in content) {
+            sorted_keys.push(Object.keys(content[index])[0])
+        }
+        // 对clone插入值
+        let len = clone.children('tr').length
+        for (let i = 0; i < tr_length; i++) {
+            let sorted_index = parseInt(sorted_keys[i])
+            let sorted_tr = table.children('tr').eq(sorted_index).clone(true)
+            let text = i + 1
+            sorted_tr.children('td:eq(0)').text(text)
+            if (len === 0) {
+                clone.append(sorted_tr)
+            } else {
+                clone.children('tr:last').after(sorted_tr)
+            }
+        }
+        // 替换table
+        table.replaceWith(clone)
+    }
+    // 升序
+    $(".fa-sort-amount-asc").on('click', function () {
+        const this_td_index = $(this).parent('th').index()
+        sort_table(this_td_index, 0)
+    })
+    // 降序
+    $(".fa-sort-amount-desc").click(function () {
+        const this_td_index = $(this).parent('th').index()
+        sort_table(this_td_index, 1)
+    })
+
+
+})

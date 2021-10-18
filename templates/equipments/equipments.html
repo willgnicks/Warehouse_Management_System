@@ -21,14 +21,14 @@
            style="width:100%; text-align: center">
         <thead>
         <tr>
-            <th>序号</th>
-            <th>隶属项目</th>
-            <th>物料编号</th>
-            <th>设备ID</th>
-            <th>产品名称</th>
-            <th>产品型号</th>
-            <th>设备状态</th>
-            <th>入库时间</th>
+            <th> 序号</th>
+            <th> 隶属项目</th>
+            <th> 物料编号</th>
+            <th> 设备ID</th>
+            <th> 产品名称</th>
+            <th> 产品型号</th>
+            <th> 设备状态</th>
+            <th> 入库时间</th>
         </tr>
         </thead>
         <tbody>
@@ -54,10 +54,6 @@
                     {% endif %}
                 </td>
                 <td>{{ equipment.inbound__in_house_date | date:"Y-m-d" }}</td>
-
-                {#                <td><a href="{% url 'project_related:get_one_project' pk=project.id %}" class="fa fa-edit"></a>&nbsp;&nbsp;#}
-                {#                    <a href="{% url 'project_related:delete_project' pk=project.id %}" class="fa fa-trash"></a>#}
-                {#                </td>#}
             </tr>
         {% endfor %}
 
@@ -97,4 +93,7 @@
             </ul>
         </div>
     </div>
+{% endblock %}
+{% block javascript %}
+    <script src="/static/custom/common.js"></script>
 {% endblock %}

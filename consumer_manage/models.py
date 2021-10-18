@@ -10,13 +10,13 @@ class Consumer(models.Model):
     # 用户联系方式
     phone = models.BigIntegerField(unique=True)
     # 用户性别
-    gender = models.CharField(max_length=10)
+    gender = models.SmallIntegerField(choices=[(0,'male'),(1,'female')])
     # 用户邮箱
     mail = models.EmailField(max_length=30, unique=True)
     # 用户状态
-    status = models.CharField(max_length=10)
+    status = models.SmallIntegerField(choices=[(0,'未启用'),(1,'启用中')])
     # 用户类型
-    type = models.CharField(max_length=10)
+    type = models.SmallIntegerField(choices=[(0,'超级管理员'),(1,'管理用户'),(2,'普通用户')])
     # 用户最后登陆日期
     last_login_date = models.DateTimeField(null=True)
     # 存放用户的session key

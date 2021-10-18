@@ -65,7 +65,7 @@
                             </li>
                             <li>
                                 <a href="{% url 'equipment_related:get_all_equips' %}">
-                                    <i class="fa fa-apple"></i>
+                                    <i class="fa fa-list-ol"></i>
                                     设备详情
                                 </a>
                             </li>
@@ -87,7 +87,7 @@
                                     出库管理
                                 </a>
                             </li>
-                            {% if request.session.type != '普通用户' %}
+                            {% if request.session.type != 2 %}
 
                                 <li><a href="{% url 'consumer_related:all_consumers_details' %}"><i
                                         class="fa fa-user"></i> 用户管理

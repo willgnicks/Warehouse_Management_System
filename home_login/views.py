@@ -1,3 +1,4 @@
+from django import forms
 from django.shortcuts import render, HttpResponseRedirect
 from consumer_manage.models import Consumer
 from django.http import HttpResponse
@@ -15,8 +16,7 @@ class LoginForm(Form):
 
 
 __session_key__ = {}
-__status_code__ = {}
-
+__status_code__ = {'status': 0}
 
 def login(request):
     """
@@ -39,20 +39,24 @@ def login(request):
     6、每次退出时清空用户的session，同浏览器再次登录用户将不携带任何session_key
     :return:
     """
+    print(request.method)
     if request.method == 'GET':
         status_code = __status_code__.get('status')
+        msg = {}
         if status_code == 1:
             __status_code__['status'] = 0
-            return render(request, 'login_home/login.html', {'msg': '您还没有登录，请先登录'})
+            msg['msg']='您还没有登录，请先登录'
         elif status_code == 2:
+            remote_IP = request.META.get('REMOTE_ADDR')
+            msg['msg']=f'您的账号已于{remote_IP}登录'
             __status_code__['status'] = 0
-            return render(request, 'login_home/login.html', {'msg': '您的账户已在其他地方登陆，如不是本人操作，请及时联系管理员修改密码'})
         elif status_code == 3:
-            return render(request, 'login_home/login.html', {'msg': '请勿非法登录'})
-        else:
-            return render(request, 'login_home/login.html')
+            msg['msg']='非法请求，无法访问资源'
+            __status_code__['status'] = 0
+        return render(request, 'login_home/login.html', msg)    
     else:
         login_form = LoginForm(request.POST)
+        return_dict = {'login': login_form}
         # 通过验证
         if login_form.is_valid():
             # 获取该用户信息
@@ -61,46 +65,21 @@ def login(request):
             # 该用户存在并且密码通过核对正确
             if login_user.exists() and login_form.cleaned_data.get('password') == user_instance.password:
                 # 该用户状态是启用状态
-                if user_instance.status == '启用':
-                    # session域添加信息
-                    # print('im adding username to session')
-                    # print('you are visiting login method')
-                    # print(date.today())
-                    # print(datetime.today())
+                if user_instance.status == 1:
+                    print(request.session.session_key)
                     request.session['username'] = user_instance.name
                     request.session['type'] = user_instance.type
                     # print(request.META)
                     Consumer.objects.filter(name__exact=user_instance.name).update(last_login_date=datetime.now())
                     # 先重定向到中间件生成session
-                    return HttpResponseRedirect(reverse('home_and_login:go_add_session_key'))
+                    return HttpResponseRedirect(reverse('home_and_login:before_go_home'))
                 else:
-                    return render(request, 'login_home/login.html',
-                                  {'login': login_form, 'msg': '您的账户已经停用，请联系管理员开启'})
+                    return_dict['msg'] = '您的账户已经停用，请联系管理员开启'
             # 用户名或密码不对
             else:
-                return render(request, 'login_home/login.html', {'login': login_form, 'msg': '用户名或密码错误'})
+                return_dict['msg'] = '用户名或密码错误'
         # 验证没通过
-        else:
-            return render(request, 'login_home/login.html', {'login': login_form})
-
-
-# def valid_user(request):
-#     # 无session_key,返回登陆界面
-#     if request.session.is_empty():
-#         return render(request,
-#                       'login_home/login.html',
-#                       {'msg': '请先登陆'})
-#     # 有session_key,继续验证
-#     else:
-#         # 验证用户请求中的session是否为最新session
-#         if request.session.session_key == User.objects.filter(
-#                 name=request.session.get('username')).first().user_session:
-#             print('step 2')
-#             return render(request, 'login_home/home.html')
-#         else:
-#             return render(request,
-#                           'login_home/login.html',
-#                           {'msg': '您的账户已在其他地方登陆，如不是本人操作，请及时联系管理员修改密码'})
+        return render(request, 'login_home/login.html', return_dict)
 
 
 # 这是最终显示index页面的view
@@ -113,7 +92,7 @@ def is_user_login(request):
 
 
 # 中间session生成函数
-def go_add_session_key(request):
+def before_go_home(request):
     # 每次登录时先更新session_key的值
     global __session_key__
     __session_key__[request.session.get('username')] = request.session.session_key

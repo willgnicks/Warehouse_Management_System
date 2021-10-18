@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>说明</title>
+
+</head>
+<body>
+<p>
+
+
+
+     产品模块：维护产品的名字，型号，价格，供应商等信息 
+     供应商模块：维护供应商的名字，联系人，联系电话，合作状态等
+     项目模块：维护当前项目的情况，项目名和编号不能重复，项目的添加为之后流程的开始
+     采购模块：为当前的项目或正常库存采购产品，采购的产品是从产品模块中导出的所有产品，不能采购在此模块之外的产品。在当前模块中选择所需的产品和采购的数量
+     入库模块：为已经完成采购的采购单入库，不能入库采购之外的产品。主要场景是已经完成采购，采购的商品验收入库，但是所采购多个系列的产品有可能不是同一时间到货。
+              那么要考虑的问题是，不同时间到货怎么入库？
+              逻辑：对一个采购单对应的多个产品和数量进行拉去，每个产品的到货时间不尽相同，但是相同型号的产品应该是同一批到货的。这个相同的型号的产品应该对应的是
+              purchaseproductrel表中的一行数据，那么针对这行数据进行标识符来区别，True是表示已经入库了，False表示还没有到货还没入库
+
+
+
+</p>
+<p>
+    产品模块: product模型，purchaseproductrel模型  
+    采购模块：purchase模型
+            product --->purchaseproductrel ---> purchase
+    product和purchase之间是多对多关系，通过中间表purchaseproductrel来对应
+
+    入库模块：   purchase ---> inbound 是一对多的关系，一个采购可能有多个入库，这个可以通过purchaseproductrel中间表来实现，每行可最小化代表一个入库单，每行外键一个inbound id
+                inbound ---> inboundequipment ---> purchaseproductrel
+
+
+</p>
+    
+</body>
+
+
+
+</html>

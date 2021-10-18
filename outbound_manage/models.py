@@ -7,15 +7,11 @@ from inbound_manage.models import Inbound
 
 
 class Outbound(models.Model):
-    # 项目管理外键
-    project = models.ForeignKey(to=Project, on_delete=models.DO_NOTHING)
-    # 入库详情外键
-    inbound = models.ForeignKey(to=Inbound, on_delete=models.DO_NOTHING)
-    # 出库单据外键
-    demand_person = models.CharField(max_length=20)
-    outbound_date = models.DateField(auto_now=True)
-    contract_number = models.CharField(max_length=50, unique=True)
-    form_number = models.CharField(max_length=50, unique=True)
+    project = models.ForeignKey(to=Project, on_delete=models.DO_NOTHING)  # 项目关联
+    demand_person = models.CharField(max_length=20)  # 需求人
+    outbound_date = models.DateField(auto_now=True)  # 出库日期，默认生成日期
+    contract_number = models.CharField(max_length=50, unique=True)  # 合同号
+    form_number = models.CharField(max_length=50, unique=True)  # 表单号
     # 删除
     flag = models.BooleanField(choices=[(True, '未删除'), (False, '已删除')], default=True)
 
@@ -24,7 +20,7 @@ class Outbound(models.Model):
         return True
 
     class Meta:
-        ordering = ['outbound_date']
+        ordering = ['id']
 
 
 class Receipts(models.Model):

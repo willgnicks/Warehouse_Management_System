@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'purchase_manage.apps.PurchaseManageConfig',
     'consumer_manage.apps.UserManageConfig',
     'equipment_manage.apps.EquipmentManageConfig',
+    'reception_manage.apps.ReceptionManageConfig',
 
 ]
 
@@ -57,7 +58,7 @@ MIDDLEWARE = [
     # 'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    # 'utils.middlewares.LoginMiddleware',
+    'utils.middlewares.LoginMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -99,9 +100,9 @@ WSGI_APPLICATION = 'Warehouse_Management_System.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'testing',
+        'NAME': 'ware',
         'USER': 'root',
-        'PASSWORD': '@Wbwwen31415926',
+        'PASSWORD': 'root',
         'HOST': '39.104.84.255',
         'PORT': '3306',
     }

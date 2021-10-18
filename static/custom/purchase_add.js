@@ -35,7 +35,6 @@ purchase_id = 0
  * @returns {*|Window.django.jQuery}
  */
 function load_by_page() {
-
     let product_len = $("#product_len").text()
     let purchase = $("#purchase_id").text()
     let product = []
@@ -84,6 +83,7 @@ $(function ($) {
     window.onload = function () {
         load_by_page()
     }
+
     // previous是product选择变化前的值
     let previous
     $("select[name='product']").on('click focus', function () {
@@ -128,17 +128,20 @@ $(function ($) {
      * 增加产品行按钮的点击事件，从最后的一个组件后增加一个该组件
      */
     $("#plus").click(function () {
+        // 克隆第一个unit
         let block = $("div[name='product_unit']:first").clone(true)
+        // 获取input值，如果不为空，清空克隆block中input的值
         let input_val = block.find('input').val()
         if (input_val != null) {
             block.children('div').children('input').val("")
         }
+        // 在最后一个unit插入block
         $("div[name='product_unit']:last").after(block)
+        // 第一个block的选中框有值，那么删除该选项值
         let val = $("select[name='product']:first").val()
         if (val !== '请选择') {
             $("div[name='product_unit']:last").find($("option[value='" + val + "']")).remove()
         }
-
         counter += 1
     });
 
@@ -181,6 +184,7 @@ $(function ($) {
         }
     });
 
+    // ajax查重
     $("input[name='form_number'], input[name='contract_number']").blur(function () {
         let query = $(this).attr('name')
         let val = $(this).val()

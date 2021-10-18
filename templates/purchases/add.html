@@ -48,30 +48,33 @@
                     <label class="col-form-label col-md-3 col-sm-3  label-align">所属项目<span
                             class="required">*</span></label>
                     <div class="col-md-6 col-sm-6">
-                        <select class="form-control" name="project_id">
-                            <option>请选择</option>
+                        <select class="form-control" name="project_id" disabled>
+                            {#                            <option>请选择</option>#}
                             <!-- 有project-->
-                            {% if purchase.project != null %}
-                                {% with this_project_id=purchase.project.id %}
-                                    <!--将project遍历-->
-                                    {% for project in projects %}
-                                        <!--如果当前purchase的project.id等于当前project的id，将当前project选中-->
-                                        {% if this_project_id == project.id %}
-                                            <option selected="selected"
-                                                    value="{{ project.id }}">{{ project.project_name }}
-                                            </option>
-                                        {% else %}
-                                            <option
-                                                    value="{{ project.id }}">{{ project.project_name }}
-                                            </option>
-                                        {% endif %}
-                                    {% endfor %}
-                                {% endwith %}
-                            {% else %}
-                                {% for project in projects %}
-                                    <option value="{{ project.id }}">{{ project.project_name }}</option>
-                                {% endfor %}
-                            {% endif %}
+                            <option selected="selected"
+                                    value="{{ purchase.project_id }}"> {{ purchase.project.project_name }}
+                            </option>
+                            {#                            {% if purchase.project is not null %}#}
+                            {#                                {% with this_project_id=purchase.project_id %}#}
+                            {#                                    <!--将project遍历-->#}
+                            {#                                    {% for project in projects %}#}
+                            {#                                        <!--如果当前purchase的project.id等于当前project的id，将当前project选中-->#}
+                            {#                                        {% if this_project_id == project.id %}#}
+                            {#                                            <option selected="selected"#}
+                            {#                                                    value="{{ project.id }}"> {{ project.id }}   {{ project.project_name }}#}
+                            {#                                            </option>#}
+                            {#                                        {% else %}#}
+                            {#                                            <option#}
+                            {#                                                    value="{{ project.id }}">{{ project.id }} {{ project.project_name }}#}
+                            {#                                            </option>#}
+                            {#                                        {% endif %}#}
+                            {#                                    {% endfor %}#}
+                            {#                                {% endwith %}#}
+                            {#                            {% else %}#}
+                            {#                                {% for project in projects %}#}
+                            {#                                    <option value="{{ project.id }}">{{ project.project_name }}</option>#}
+                            {#                                {% endfor %}#}
+                            {#                            {% endif %}#}
                         </select>
                         <span style="color: red; font-weight: bold"></span>
                     </div>
@@ -125,7 +128,7 @@
                                 <option value="{{ project.id }}">{{ project.project_name }}</option>
                             {% endfor %}
                         </select>
-                    <span style="color: red; font-weight: bold"></span>
+                        <span style="color: red; font-weight: bold"></span>
                     </div>
                 </div>
                 <div name="product_unit" class="field item form-group">
@@ -133,7 +136,7 @@
                             class="required">*</span></label>
                     <div class="col-md-4 col-sm-4">
                         <select class="form-control" name="product">
-                            <option>请选择</option>
+                            <option >请选择</option>
                             {% for product in products %}
                                 <option value="{{ product.id }}">{{ product.product_name }} {{ product.product_model }}</option>
                             {% endfor %}

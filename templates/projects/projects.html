@@ -39,6 +39,7 @@
         {% for project in projects %}
             <tr>
                 <td>{{ forloop.counter }}</td>
+                {#                <td>{{ project.id }}</td>#}
                 <td>{{ project.project_name }}</td>
                 <td>{{ project.project_code }}</td>
                 <td>
@@ -93,4 +94,7 @@
             </ul>
         </div>
     </div>
+{% endblock %}
+{% block javascript %}
+    <script src="/static/custom/common.js"></script>
 {% endblock %}

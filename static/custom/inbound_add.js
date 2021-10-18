@@ -74,6 +74,13 @@ $(function ($) {
     $('select[name="pp_rel_id"]').on('change', function () {
         // 显示相同的设备ID的input框
         let quantity = $(this).children('option:selected').attr('name')
+        $('div[name="SN"]').each(function (index) {
+            if(index !== 0){
+                $(this).remove()
+            }else{
+                $(this).find('input').attr('placeholder', '')
+            }
+        })
         if (quantity > 1 && quantity != undefined) {
             for (let i = 1; i < quantity; i++) {
                 $('div[name="SN"]:last').after($('div[name="SN"]:first').clone(true))

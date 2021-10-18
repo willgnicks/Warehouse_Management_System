@@ -55,6 +55,7 @@ def get_all_inbounds(request, **kwargs):
                      'pp_rel__quantity',
                      'pp_rel__product__product_name',
                      'pp_rel__product__product_model',
+                     'pp_rel__purchase__form_number'
                      ]
     query_dic = kwargs.get('kwargs').get('query') if kwargs else {}
     return get_all(request, klass=Inbound, kwargs={

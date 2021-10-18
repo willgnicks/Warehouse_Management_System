@@ -1,12 +1,8 @@
 import time
-from datetime import datetime
-import string
 from django.core.paginator import Paginator
 from django.shortcuts import render, HttpResponseRedirect
 from django.urls import reverse
-from django.db.models import Q, Model
-
-from product_manage.models import PurchaseProductRel
+from django.db.models import Q
 
 
 def get_kwargs(klass, package_data):
@@ -68,7 +64,7 @@ def get_model_name_from_modelform(klass):
 # 获取所有模型数据
 def get_all(request, klass, **kwargs):
     """
-    :param request:
+    :param request: get_all(request, klass=Inbound, kwargs={'value_field': values_fields, 'query': query_dic})
     :param klass:   传入检索的类名 用来生成该类的queryset和生成render所需的template路径
     :param kwargs:   {query:query_dic,rel:rel_val} query（查询的条件）和rel（其他需要返回的关系类名）的写法固定，query_set和rel_val根据需要检索的不同而不同
     :return:  返回klass对应的template的render，调用该方法返回render即可
@@ -79,16 +75,13 @@ def get_all(request, klass, **kwargs):
     start = time.time()
     # 获取查询的内容，根据查询的内容生成q，如果q为空，即没有任何where条件
     query_dic = kwargs.get('kwargs').get('query') if kwargs else {}
-    q = Q()
-    if query_dic:
-        for query in query_dic:
-            q.add(Q(**{query: query_dic[query]}), Q.OR)
+    q = get_the_Q(query_dic)
     # 生成结果集
     values_fields = kwargs.get('kwargs').get('value_field') if kwargs.get('kwargs') is not None else None
     queryset = klass.objects.all().filter(flag=True).filter(
         q).values(*values_fields) if values_fields is not None else klass.objects.all().filter(flag=True).filter(q)
     # 生成分页器
-    paginator = Paginator(queryset, 10)
+    paginator = Paginator(queryset, 5)
     # 获取当前页面值
     page_number = request.GET.get('page') if request.GET.get('page') is not None else 1
     # 获取页面数据
@@ -102,6 +95,7 @@ def get_all(request, klass, **kwargs):
             rel_set.insert(index, queryset[index].__getattribute__(rel_val))
     print(class_name, '&', template_url)
     print('后台耗时：', time.time() - start, 's')
+    print(page_data.has_next)
     return render(request,
                   template_url,
                   {
@@ -135,9 +129,6 @@ def add_or_update(request, klass, form_class, **kwargs):
     # 根据列表循环将引用类类名和该类的queryset形成键值对
     if quote_class_list is not None:
         quote_dic = {get_model_name(k): k.objects.all() for k in quote_class_list}
-        # for k in quote_class_list:
-        #     quote_dic[get_model_name(k)] = k.objects.all()
-    # print(quote_dic)
     if request.method == 'GET':
         # 第一次get请求页面， 此时为新增的页面
         print(time.time())

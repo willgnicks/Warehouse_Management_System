@@ -16,7 +16,7 @@
 {% endblock %}
 {% block content_title %}
     <span class="input-group-btn">
-                <button type="button" class="fa fa-plus btn btn-outline-success"
+    <button type="button" class="fa fa-plus btn btn-outline-success"
                         onclick="window.location.href='{% url 'consumer_related:add_consumer' %}'">
                 新增用户
                 </button>
@@ -46,17 +46,19 @@
                 <tr>
                     <td>{{ forloop.counter }}</td>
                     <td>{{ consumer.name }}</td>
-                    <td>{{ consumer.gender }}</td>
+                    <td>{% if consumer.gender == 0 %}男性{%else%}女性{%endif%}</td>
                     <td>{{ consumer.phone }}</td>
                     <td>{{ consumer.mail }}</td>
-                    <td>{{ consumer.type }}</td>
-                    <td>{{ consumer.status }}</td>
+                    <td>{% if consumer.type == 0 %}超级管理员{%elif consumer.type == 1%}管理员{%else%}普通用户{%endif%}</td>
+                    <td>{% if consumer.status == 0 %}停用{%else%}启用{%endif%}</td>
                     <td>{{ consumer.last_login_date | date:'Y-m-d H:i:s' }}</td>
-                    {% if consumer.type == '超级管理员' %}
+                    {% if consumer.type == 0 %}
                         <td></td>
                     {% else %}
-                        <td><a href="{% url 'consumer_related:get_one_consumer' pk=consumer.id %}" class="fa fa-edit"></a>&nbsp;&nbsp;
-                            <a href="{% url 'consumer_related:delete_consumer' pk=consumer.id %}" class="fa fa-trash"></a>
+                        <td><a href="{% url 'consumer_related:get_one_consumer' pk=consumer.id %}"
+                               class="fa fa-edit"></a>&nbsp;&nbsp;
+                            <a href="{% url 'consumer_related:delete_consumer' pk=consumer.id %}"
+                               class="fa fa-trash"></a>
                         </td>
                     {% endif %}
                 </tr>
@@ -104,4 +106,7 @@
             </ul>
         </div>
     </div>
+{% endblock %}
+{% block javascript %}
+    <script src="/static/custom/common.js"></script>
 {% endblock %}

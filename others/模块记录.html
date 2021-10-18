@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>说明</title>
+
+</head>
+<body>
+<p>
+
+
+  <ul>
+
+    <li>产品模块：维护产品的名字，型号，价格，供应商等信息 </li> 
+    <li> 供应商模块：维护供应商的名字，联系人，联系电话，合作状态等</li> 
+    <li>项目模块：维护当前项目的情况，项目名和编号不能重复，项目的添加为之后流程的开始</li> 
+    <li>采购模块：为当前的项目或正常库存采购产品，采购的产品是从产品模块中导出的所有产品，不能采购在此模块之外的产品。在当前模块中选择所需的产品和采购的数量</li> 
+    <li>入库模块：
+        <ul>
+            <li>为已经完成采购的采购单入库，不能入库采购之外的产品</li>
+            <li>主要场景是已经完成采购，采购的商品验收入库，但是所采购多个系列的产品有可能不是同一时间到货</li>
+            <li>那么要考虑的问题是，不同时间到货怎么入库？</li>
+            <li>逻辑：对一个采购单对应的多个产品和数量进行拉去，每个产品的到货时间不尽相同，但是相同型号的产品应该是同一批到货的。</li>
+            <li>这个相同的型号的产品应该对应的是purchaseproductrel表中的一行数据，那么针对这行数据进行标识符来区别，True是表示已经入库了，False表示还没有到货还没入库</li>
+        </ul>
+        
+        
+        </li> 
+    
+    
+     
+     
+     
+
+
+  </ul>
+  
+
+
+
+</p>
+<p>
+<ul>
+    <li>purchaseproductrel中字段</li>
+    <li>id：代表该行</li>
+    <li>quantity：代表采购数量</li>
+    <li>product_id：代表产品型号等信息</li>
+    <li>purchase_id：代表采购单外键</li>
+    <li>inbound_id：代表入库单外键</li>
+    <li>status：代表采购单状态flag，0已采购没入库，1已采购已入库。入库时可选的只有flag=0的relation</li>
+</ul>
+
+</p>
+<p>
+    <ul>
+        <li>inbound中字段</li>
+        <li>id：代表该行</li>
+        <li>equipment_id：代表设备序列号，textarea</li>
+        <li>inhouse_data：入库时间</li>
+        <li>inhouse：代表在库的数量</li>
+        <li>receped：代表领用数量</li>
+        <li>lended：代表借出数量</li>
+        <li>outbound：代表出库数量</li>
+    </ul>
+</p>
+<p>
+    
+    <ul>
+        <li>产品模块: product模型，purchaseproductrel模型  </li>
+        <li>采购模块：purchase模型
+            <ul>
+                <li>product --->purchaseproductrel ---> purchase</li>
+                <li>product和purchase之间是多对多关系，通过中间表purchaseproductrel来对应</li>
+            </ul> </li>
+        <li>入库模块：inbound模型
+            <ul>
+                <li>purchase ---> inbound 是一对多的关系，一个采购可能有多个入库，这个可以通过purchaseproductrel中间表来实现，每行可最小化代表一个入库单，每行外键一个inbound id</li>
+                <li>inbound ---> inboundequipment ---> purchaseproductrel</li>
+                <li>将所有入过库的设备放在一张表中，以状态码来区分设备状态， inbound中inhouse + reception + lending + outbound = purchaseproductrel中的quantity
+                <li>inbound表一对多一张equipment表，equipment中字段只有inbound id，sn，status，status用状态码</li>
+                    <ul>
+                        <li>0代表已采购，未入库</li>
+                        <li>1代表已入库，在库存 inhouse</li>
+                        <li>2代表已领用，不在库 reception</li>
+                        <li>3代表已借测，不在库 lending</li>
+                        <li>4代表已出库，不在库 outbound</li>
+                    </ul>
+                    每个设备有一个唯一设备序列号，该设备的名称，型号，价格等外键到product模型。</li>
+            </ul>
+        </li>
+        <li>采购了5台，同一入库编号，但是该入库编号下的5台设备有可能2台在库，一台借测或者一台出库</li>
+        <li>那么在出库一台设备的时候，不关心序列号的情况下，那么就是看总数，出库2台，但是这个设备采购5台，那么剩余3台</li>
+        <li>那么意味着领用借测或出库业务会同时变动inbound中的两个数据，inhouse和业务数据 那么之后可以groupby这些业务拿到该业务数据</li>
+    </ul>
+    <ul>
+
+        <li>领用 借测 出库只能在inbound中的inhouse中选择 显示inhouse数量和编号</li>
+    </ul>
+   
+    
+    
+
+       
+                
+
+
+</p>
+
+    
+</body>
+
+
+
+</html>

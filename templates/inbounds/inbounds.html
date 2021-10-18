@@ -29,6 +29,7 @@
         <thead>
         <tr>
             <th>序号</th>
+            <th>采购单号</th>
             <th>物料编号</th>
             <th>产品名称</th>
             <th>产品型号</th>
@@ -43,7 +44,7 @@
 
             <tr>
                 <td>{{ forloop.counter }}</td>
-                {#                <td>{{ inbound.id }}</td>#}
+                <td>{{ inbound.pp_rel__purchase__form_number }}</td>
                 <td>{{ inbound.material_code }}</td>
                 <td>{{ inbound.pp_rel__product__product_name }}</td>
                 <td>{{ inbound.pp_rel__product__product_model }}</td>
@@ -92,4 +93,7 @@
             </ul>
         </div>
     </div>
+{% endblock %}
+{% block javascript %}
+    <script src="/static/custom/common.js"></script>
 {% endblock %}
