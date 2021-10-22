@@ -81,7 +81,7 @@ def get_all(request, klass, **kwargs):
     queryset = klass.objects.all().filter(flag=True).filter(
         q).values(*values_fields) if values_fields is not None else klass.objects.all().filter(flag=True).filter(q)
     # 生成分页器
-    paginator = Paginator(queryset, 5)
+    paginator = Paginator(queryset, 10)
     # 获取当前页面值
     page_number = request.GET.get('page') if request.GET.get('page') is not None else 1
     # 获取页面数据

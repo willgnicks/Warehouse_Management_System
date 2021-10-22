@@ -86,7 +86,7 @@ def get_all_purchases(request, **kwargs):
     # 分页
     end = time.time()
     print('耗时：', end - start, 's')
-    paginator = Paginator(purchases, 20)
+    paginator = Paginator(purchases, 10)
     page_data = paginator.page(number=page_number)
     return render(request, 'purchases/purchases.html',
                   {'purchases': page_data, 'count': paginator.count})
